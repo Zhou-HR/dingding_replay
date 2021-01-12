@@ -3,7 +3,6 @@ package com.gdiot.task;
 import com.alibaba.fastjson.JSONArray;
 import com.gdiot.redis.RedisUtil;
 import com.gdiot.service.AsyncService;
-import com.gdiot.service.IDingUserDataService;
 import com.gdiot.util.DingDataAnalysis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ public class DataSenderTask implements Runnable {
 
     private AsyncService asyncService;
     public RedisUtil redisUtil;
-    private IDingUserDataService mIDingUserDataService;
 
     public DataSenderTask(String data, String type) {
         super();
@@ -43,59 +41,60 @@ public class DataSenderTask implements Runnable {
         LOGGER.info("task: DataSenderTask run-msgMap :" + msgMap);
 
         switch (type) {
-            case "all_dep_user_detail":
-                getAllDepUserDetail(data);
+            case "all_dept_user_detail":
+                getAllDeptUserDetail(data);
                 break;
-            case "all_dep_detail":
-                getAllDepDetail(data);
+            case "all_dept_detail":
+                getAllDeptDetail(data);
                 break;
-            case "all_user_parent_dep":
-                getAllUserParentDep();
+            case "all_user_parent_dept":
+                getAllUserParentDept();
                 break;
             default:
                 break;
         }
     }
 
-    private void getAllDepUserDetail(String depId) {
-
+    private void getAllDeptUserDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
-        JSONArray userListDetail = mDingDataAnalysis.getAllDepUserDetail(depId, accessToken);
+        JSONArray userListDetail = mDingDataAnalysis.getAllDeptUserDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
-    private void getAllDepDetail(String depId) {
+    private void getAllDeptDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
-        JSONArray userListDetail = mDingDataAnalysis.getAllDepDetail(depId, accessToken);
+        JSONArray userListDetail = mDingDataAnalysis.getAllDeptDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
-    private void getAllUserParentDep() {
-
+    private void getAllUserParentDept() {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
-        mDingDataAnalysis.getAllUserParentDep(accessToken);
-
+        mDingDataAnalysis.getAllUserParentDept(accessToken);
     }
 
     public AsyncService getAsyncService() {
+
         return asyncService;
     }
 
     public void setAsyncService(AsyncService asyncService) {
+
         this.asyncService = asyncService;
     }
 
     public RedisUtil getRedisUtil() {
+
         return redisUtil;
     }
 
     public void setRedisUtil(RedisUtil redisUtil) {
+
         this.redisUtil = redisUtil;
     }
 

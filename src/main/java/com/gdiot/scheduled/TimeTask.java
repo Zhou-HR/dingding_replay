@@ -20,7 +20,7 @@ public class TimeTask {
 
     /**
      * 定时任务每天凌晨1点执行一次，查询所有的用户信息
-     * 1，获取所欲部门ID及子部门ID
+     * 1，获取所有部门ID及子部门ID
      * 2，获取部门下的用户ID列表
      * 3，根据用户ID获取用户详情
      * 4，用户详情解析，保存数据库
@@ -30,7 +30,7 @@ public class TimeTask {
     public void scheduledTask() {
         log.info("定时任务每天凌晨1点执行一次，查询所有的用户信息");
         String depId = "1";
-        DataSenderTask task = new DataSenderTask(depId, "all_dep_user_detail");
+        DataSenderTask task = new DataSenderTask(depId, "all_dept_user_detail");
         task.setAsyncService(asyncService);
         asyncService.executeAsync(task);
     }

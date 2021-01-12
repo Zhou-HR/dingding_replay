@@ -1,9 +1,9 @@
 spring:
     datasource:
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/dingding-login?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&rewriteBatchedStatements=true
+        url: jdbc:mysql://localhost:3306/my_dingding_project?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&rewriteBatchedStatements=true
         username: root
-        password: pAssword@051011
+        password: root
 
     redis:
         host: 127.0.0.1
@@ -18,5 +18,5 @@ mybatis:
         map-underscore-to-camel-case: true
 
 server:
-    port: 9082
+    port: 8888
     

@@ -2,7 +2,7 @@ package com.gdiot.util;
 
 /**
  * @Description:对接钉钉的工具类
- * @Authod:zhang_cq
+ * @Author:zhang_cq
  * @Date:2018/3/19 下午2:59
  */
 public class DingUtils {
