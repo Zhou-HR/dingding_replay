@@ -1,7 +1,6 @@
 package com.gdiot.mapper;
 
 import com.gdiot.entity.DingDept;
-import com.gdiot.entity.DingUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 

@@ -27,6 +27,30 @@
             </Config>
           </value>
         </entry>
+        <entry key="ding_process">
+          <value>
+            <Config>
+              <option name="comment" value="true" />
+              <option name="daoMvnPath" value="src/main/java" />
+              <option name="daoName" value="DingProcessMapper" />
+              <option name="daoPackage" value="com.gdiot.mapper" />
+              <option name="daoPostfix" value="Mapper" />
+              <option name="modelMvnPath" value="src/main/java" />
+              <option name="modelName" value="DingProcess" />
+              <option name="modelPackage" value="com.gdiot.entity" />
+              <option name="name" value="ding_process" />
+              <option name="overrideJava" value="true" />
+              <option name="overrideXML" value="true" />
+              <option name="primaryKey" value="id" />
+              <option name="projectFolder" value="$PROJECT_DIR$" />
+              <option name="tableName" value="ding_process" />
+              <option name="useLombokPlugin" value="true" />
+              <option name="useSchemaPrefix" value="true" />
+              <option name="xmlMvnPath" value="src/main/resources" />
+              <option name="xmlPackage" value="mybatis/mapper" />
+            </Config>
+          </value>
+        </entry>
         <entry key="ding_user">
           <value>
             <Config>

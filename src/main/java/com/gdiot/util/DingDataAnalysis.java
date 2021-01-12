@@ -1,25 +1,32 @@
 package com.gdiot.util;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.*;
 import com.dingtalk.api.response.*;
+import com.dingtalk.api.response.OapiProcessinstanceGetResponse.ProcessInstanceTopVo;
+import com.dingtalk.api.response.OapiProcessinstanceListidsResponse.PageResult;
 import com.gdiot.entity.DingDept;
+import com.gdiot.entity.DingProcess;
 import com.gdiot.entity.DingUser;
 import com.gdiot.service.DingDeptService;
 import com.gdiot.service.DingUserService;
 import com.taobao.api.ApiException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:对接钉钉的工具类
  * @Author:zhangjieqiong
  * @Date:2018/3/19 下午2:59
  */
+@Slf4j
 public class DingDataAnalysis {
     private DingUserService dingUserService;
     private DingDeptService dingDeptService;
@@ -130,7 +137,7 @@ public class DingDataAnalysis {
     }
 
     /**
-     * 获取所以用户的父部门
+     * 获取所有用户的父部门
      *
      * @param accessToken
      */
@@ -450,6 +457,263 @@ public class DingDataAnalysis {
         return list;
     }
 
+    /**
+     * 根据用户ID，获取指定时间段开票审批流
+     *
+     * @param startTime
+     * @param endTime
+     * @param userId
+     * @param accessToken
+     * @return
+     */
+    public List<String> getProcessListId(long startTime, long endTime, String userId, String accessToken) {
+        try {
+            List<String> id_list = new ArrayList<>();
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/listids");
+            OapiProcessinstanceListidsRequest req = new OapiProcessinstanceListidsRequest();
+            req.setProcessCode(DingUtils.PROCESS_CODE);
+            req.setStartTime(startTime);
+            req.setEndTime(endTime);
+            req.setSize(10L);
+            req.setCursor(0L);
+            req.setUseridList(userId);
+            OapiProcessinstanceListidsResponse response = client.execute(req, accessToken);
+            if (response != null) {
+                long errCode = response.getErrcode();
+                if (errCode == 0) {
+                    log.info("getBody-----" + response.getBody() + "\n");
+                    PageResult result = response.getResult();
+                    id_list = result.getList();
+                    log.info("id_list=" + id_list.toString());
+                    if (id_list != null && id_list.size() > 0) {
+                        return id_list;
+                    }
+                }
+            }
+            return id_list;
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 根据实例ID获取审批流
+     *
+     * @param processId
+     * @param accessToken
+     * @return
+     */
+    public DingProcess getProcessInstance(String processId, String accessToken) {
+        try {
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/get");
+            OapiProcessinstanceGetRequest request = new OapiProcessinstanceGetRequest();
+            request.setProcessInstanceId(processId);
+            OapiProcessinstanceGetResponse response = client.execute(request, accessToken);
+            long errCode = response.getErrcode();
+            log.info("errCode-----" + errCode);
+
+            DingProcess dingProcess = new DingProcess();
+            if (errCode == 0) {
+                dingProcess = AnalysisProcessInstance(processId, response);
+                return dingProcess;
+            } else {
+                return null;
+            }
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 获取所有改造审批单的列表
+     *
+     * @param accessToken
+     * @param params
+     */
+   /* public void getAllProcessList(String accessToken, Map<String, Object> params) {
+        if (mIDingDingUserService == null) {
+            mIDingDingUserService = SpringContextUtils.getBean(IDingDingUserService.class);
+        }
+        if (mIDingAssessService == null) {
+            mIDingAssessService = SpringContextUtils.getBean(IDingAssessService.class);
+        }
+
+        long endTime = System.currentTimeMillis();
+        long startTime = endTime - 24 * 60 * 60 * 1000;
+        if (params != null) {
+            if (params.containsKey("startTime")) {
+                startTime = (long) params.get("startTime");
+            }
+            if (params.containsKey("endTime")) {
+                endTime = (long) params.get("endTime");
+            }
+        }
+        log.info("startTime-----" + DateUtil.milliSecond2Date(String.valueOf(startTime), "yyyy-MM-dd HH:mm:ss"));
+        log.info("endTime-----" + DateUtil.milliSecond2Date(String.valueOf(endTime), "yyyy-MM-dd HH:mm:ss"));
+
+//			JSONArray jsonArr = new JSONArray();
+        List<DingDingUser> list = mIDingDingUserService.selectAllUserId();
+        for (DingDingUser user : list) {
+            String userId = null;
+            try {
+                userId = user.getDdId();
+            } catch (Exception e) {
+                log.info("e=" + e.toString());
+            }
+            if (userId != null) {
+                log.info("userId-----" + userId);
+                List<String> id_list = getAssessListId(startTime, endTime, userId, accessToken);
+                log.info("id_list=" + id_list.toString());
+                if (id_list != null && id_list.size() > 0) {
+                    String dd_id;
+                    String assess_list;
+                    String start_time;
+                    String end_time;
+                    String create_time;
+                    DingAssessPo mDingAssessPo = new DingAssessPo();
+                    mDingAssessPo.setDd_id(userId);
+                    mDingAssessPo.setAssess_list(id_list.toString());
+                    mDingAssessPo.setStart_time(String.valueOf(startTime));
+                    mDingAssessPo.setEnd_time(String.valueOf(endTime));
+                    mIDingAssessService.insertDingAssess(mDingAssessPo);
+
+                    int list_size = id_list.size();
+                    for (int i = 0; i < list_size; i++) {
+                        String assessId = id_list.get(i);
+                        DingAssessDetailPo mDingAssessDetailPo = getAssessInstance(assessId, accessToken);
+                        if (mDingAssessDetailPo != null) {
+                            mIDingAssessService.insertDingAssessDetail(mDingAssessDetailPo);
+                        }
+                        String proj_code = mDingAssessDetailPo.getProjectCode();
+                        String applyId = mDingAssessDetailPo.getBusinessCode();
+                        String applyReasonType = mDingAssessDetailPo.getApplyReasonType();
+                        String auditResult = mDingAssessDetailPo.getAuditResult();
+                        String auditStatus = mDingAssessDetailPo.getAuditStatus();
+                        if ("agree".equals(auditResult) && "COMPLETED".equals(auditStatus)) {//审批通过的
+                            int result = JdbcErpOPRView.selectORPByProjCode(proj_code, applyId, applyReasonType, auditResult);
+                            int result2 = JdbcErpZYView.selectZYByProjCode(proj_code, applyId, applyReasonType, auditResult);
+                        }
+                    }
+                } else {
+                    continue;
+                }
+
+            } else {
+                continue;
+            }
+
+        }
+//			return jsonArr;
+    }*/
+
+    /**
+     * 解析实例详情
+     *
+     * @param processId
+     * @param response
+     * @return
+     */
+    public DingProcess AnalysisProcessInstance(String processId, OapiProcessinstanceGetResponse response) {
+
+        ProcessInstanceTopVo vo = response.getProcessInstance();
+        //实例详情
+        String body = response.getBody();
+        log.info("getBody-----" + response.getBody() + "\n");
+
+        log.info("getTitle审批实例标题-----" + vo.getTitle());
+        //审批实例标题
+        log.info("getCreateTime开始时间-----" + vo.getCreateTime());
+        //开始时间
+        log.info("getFinishTime结束时间-----" + vo.getFinishTime());
+        //结束时间
+        log.info("getOriginatorUserid发起人-----" + vo.getOriginatorUserid());
+        //发起人
+        log.info("getOriginatorDeptId发起部门-----" + vo.getOriginatorDeptId());
+        //发起部门
+        log.info("getStatus审批状态-----" + vo.getStatus());
+        //审批状态，分为NEW（新创建）RUNNING（运行中）TERMINATED（被终止）COMPLETED（完成）
+        log.info("getCcUserids抄送人-----" + vo.getCcUserids());
+        //抄送人
+        log.info("getResult结果-----" + vo.getResult());
+        //结果，分为NONE（无），AGREE（同意），REFUSE（拒绝），REDIRECTED（转交）
+        log.info("getBusinessId审批实例业务编号-----" + vo.getBusinessId());
+        //审批实例业务编号
+        log.info("getOriginatorDeptName发起部门-----" + vo.getOriginatorDeptName());
+        //发起部门
+        List<OapiProcessinstanceGetResponse.FormComponentValueVo> formList = vo.getFormComponentValues();
+        DingProcess dingProcess = analysisProcessFormValues(formList);
+
+        dingProcess.setProcessId(processId);
+        dingProcess.setTitle(vo.getTitle());
+        dingProcess.setStartTime(DateUtil.milliSecond2Date(String.valueOf(vo.getCreateTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+        dingProcess.setFinishTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+        dingProcess.setOriginatorUserId(vo.getOriginatorUserid());
+        dingProcess.setOriginatorDeptId(vo.getOriginatorDeptId());
+        dingProcess.setOriginatorDeptName(vo.getOriginatorDeptName());
+        dingProcess.setStatus(vo.getStatus());
+        dingProcess.setResult(vo.getResult());
+        return dingProcess;
+    }
+
+    /**
+     * 解析差旅数据表单
+     *
+     * @param list
+     * @return
+     */
+    public DingProcess analysisProcessFormValues(List<OapiProcessinstanceGetResponse.FormComponentValueVo> list) {
+        System.out.println("-------------------------------analysis Process FormValues----------------------------------- " + "\n");
+        DingProcess dingProcess = new DingProcess();
+        try {
+            if (list != null && list.size() > 0) {
+                for (OapiProcessinstanceGetResponse.FormComponentValueVo vo : list) {
+                    String name = vo.getName();
+                    String value = vo.getValue();
+                    String id = vo.getId();
+                    log.info("name: " + name + "\n");
+                    log.info("value: " + value + "\n");
+
+                    if ("开票公司".equals(name) || "DDSelectField_1ITKOQRG3DQ80".equals(id)) {
+                        dingProcess.setInvoiceCompany(value);
+                    } else if ("合同名称及编号".equals(name) || "TextField-JZCI6WBK".equals(id)) {
+                        dingProcess.setContractNameAndNumber(value);
+                    } else if ("合同（附件）".equals(name) || "DDAttachment_13F6MHAAZCZG0".equals(id)) {
+                        dingProcess.setContract(value);
+                    } else if ("本次开票事由".equals(name) || "TextField_1R5WIZDM0LKW0".equals(id)) {
+                        dingProcess.setInvoiceReason(value);
+                    } else if ("发票种类".equals(name) || "DDSelectField_1CRQBOWMXAPS0".equals(id)) {
+                        dingProcess.setInvoiceType(value);
+                    } else if ("开票名称".equals(name) || "TextField-JZCI6WBQ".equals(id)) {
+                        dingProcess.setInvoiceName(value);
+                    } else if ("纳税人识别号".equals(name) || "TextField-JZCI6WBT".equals(id)) {
+                        dingProcess.setTaxpayerNumber(value);
+                    } else if ("地址和电话".equals(name) || "TextField-JZCI6WBV".equals(id)) {
+                        dingProcess.setAddressAndTelephone(value);
+                    } else if ("开户行及账号".equals(name) || "TextField-JZCI6WBX".equals(id)) {
+                        dingProcess.setBankAndAccount(value);
+                    } else if (("开票内容（品名）").equals(name) || "TextField_4EIAT41VDE60".equals(id)) {
+                        dingProcess.setInvoiceContent(value);
+                    } else if (("开票金额（元）（含税）").equals(name) || "MoneyField-JZCI6WC1".equals(id)) {
+                        dingProcess.setInvoiceAmount(value);
+                    } else if (("税率").equals(name) || "DDSelectField_23C12YMM130G0".equals(id)) {
+                        dingProcess.setTaxRate(value);
+                    } else if (("开票说明").equals(name) || "TextField_ZGKEYZ6U8740".equals(id)) {
+                        dingProcess.setInvoiceExplain(value);
+                    } else if (("要求开票时间").equals(name) || "DDDateField_51M80I7SAX00".equals(id)) {
+                        dingProcess.setInvoiceStartTime(value);
+                    } else if (("预计回款时间").equals(name) || "DDDateField_ZWOV03BUSW00".equals(id)) {
+                        dingProcess.setInvoiceFinishTime(value);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            log.info("JSONException e=" + e);
+        }
+        System.out.println("-------------------------------analysis Process FormValues  end----------------------------------- " + "\n");
+        return dingProcess;
+    }
 
 }
 
