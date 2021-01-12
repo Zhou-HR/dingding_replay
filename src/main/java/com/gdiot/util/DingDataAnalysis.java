@@ -619,7 +619,6 @@ public class DingDataAnalysis {
 
         ProcessInstanceTopVo vo = response.getProcessInstance();
         //实例详情
-        String body = response.getBody();
         log.info("getBody-----" + response.getBody() + "\n");
 
         log.info("getTitle审批实例标题-----" + vo.getTitle());
@@ -654,11 +653,12 @@ public class DingDataAnalysis {
         dingProcess.setOriginatorDeptName(vo.getOriginatorDeptName());
         dingProcess.setStatus(vo.getStatus());
         dingProcess.setResult(vo.getResult());
+        dingProcess.setBusinessId(vo.getBusinessId());
         return dingProcess;
     }
 
     /**
-     * 解析差旅数据表单
+     * 解析开票数据表单
      *
      * @param list
      * @return

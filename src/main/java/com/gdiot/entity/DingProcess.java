@@ -2,11 +2,14 @@ package com.gdiot.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * ding_process
- * @author 
+ *
+ * @author ZhouHR
+ * @date 2021/01/12
  */
 @Data
 public class DingProcess implements Serializable {

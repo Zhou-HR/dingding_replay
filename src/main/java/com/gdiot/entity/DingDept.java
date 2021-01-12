@@ -8,7 +8,8 @@ import lombok.Data;
 /**
  * ding_dept
  *
- * @author
+ * @author ZhouHR
+ * @date 2021/01/12
  */
 @Data
 public class DingDept implements Serializable {
