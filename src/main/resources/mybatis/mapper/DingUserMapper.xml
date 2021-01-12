@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdiot.mapper.DingUserMapper">
+    <resultMap id="BaseResultMap" type="com.gdiot.entity.DingUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="unionid" jdbcType="VARCHAR" property="unionid"/>
+        <result column="manager_id" jdbcType="VARCHAR" property="managerId"/>
+        <result column="position" jdbcType="VARCHAR" property="position"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="roles" jdbcType="VARCHAR" property="roles"/>
+        <result column="dept1" jdbcType="VARCHAR" property="dept1"/>
+        <result column="dept2" jdbcType="VARCHAR" property="dept2"/>
+        <result column="dept3" jdbcType="VARCHAR" property="dept3"/>
+        <result column="dept4" jdbcType="VARCHAR" property="dept4"/>
+        <result column="dept5" jdbcType="VARCHAR" property="dept5"/>
+        <result column="work_no" jdbcType="VARCHAR" property="workNo"/>
+        <result column="start_work_date" jdbcType="VARCHAR" property="startWorkDate"/>
+        <result column="work_place" jdbcType="VARCHAR" property="workPlace"/>
+        <result column="work_age" jdbcType="VARCHAR" property="workAge"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="dimission" jdbcType="TINYINT" property="dimission"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, user_id, NAME, unionid, manager_id, POSITION, tel, mobile, email, roles,
+        dept1, dept2, dept3, dept4, dept5, work_no, start_work_date, work_place, work_age,
+        create_time, update_time, dimission
+    </sql>
+
+    <select id="selectOne" resultType="com.gdiot.entity.DingUser">
+        select
+        <include refid="Base_Column_List"/>
+        from ding_user
+        where 1 = 1
+        <if test="dep_id != null">
+            and user_id = #{userId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectAllUserId" resultType="com.gdiot.entity.DingUser">
+        select user_id from ding_user
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingUser">
+        insert into ding_user (
+        <include refid="Base_Column_List"/>
+        )values (
+        default, #{userId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR},
+        #{managerId,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
+        #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{roles,jdbcType=VARCHAR},
+        #{dept1,jdbcType=VARCHAR}, #{dept2,jdbcType=VARCHAR}, #{dept3,jdbcType=VARCHAR},
+        #{dept4,jdbcType=VARCHAR}, #{dept5,jdbcType=VARCHAR}, #{workNo,jdbcType=VARCHAR},
+        #{startWorkDate,jdbcType=VARCHAR}, #{workPlace,jdbcType=VARCHAR}, #{workAge,jdbcType=VARCHAR},
+        default, #{updateTime,jdbcType=TIMESTAMP}, #{dimission,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <update id="update">
+        update ding_user
+        set NAME = #{name,jdbcType=VARCHAR},
+        unionid = #{unionid,jdbcType=VARCHAR},
+        manager_id = #{managerId,jdbcType=VARCHAR},
+        POSITION = #{position,jdbcType=VARCHAR},
+        tel = #{tel,jdbcType=VARCHAR},
+        mobile = #{mobile,jdbcType=VARCHAR},
+        email = #{email,jdbcType=VARCHAR},
+        roles = #{roles,jdbcType=VARCHAR},
+        dept1 = #{dept1,jdbcType=VARCHAR},
+        dept2 = #{dept2,jdbcType=VARCHAR},
+        dept3 = #{dept3,jdbcType=VARCHAR},
+        dept4 = #{dept4,jdbcType=VARCHAR},
+        dept5 = #{dept5,jdbcType=VARCHAR},
+        work_no = #{workNo,jdbcType=VARCHAR},
+        start_work_date = #{startWorkDate,jdbcType=VARCHAR},
+        work_place = #{workPlace,jdbcType=VARCHAR},
+        work_age = #{workAge,jdbcType=VARCHAR},
+        update_time = CURRENT_TIMESTAMP,
+        dimission = #{dimission,jdbcType=TINYINT}
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateUserDept">
+	    UPDATE ding_user
+		SET
+		dept1 = #{dept1,jdbcType=VARCHAR},
+        dept2 = #{dept2,jdbcType=VARCHAR},
+        dept3 = #{dept3,jdbcType=VARCHAR},
+        dept4 = #{dept4,jdbcType=VARCHAR},
+        dept5 = #{dept5,jdbcType=VARCHAR},
+		update_time = CURRENT_TIMESTAMP
+		WHERE user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+</mapper>
