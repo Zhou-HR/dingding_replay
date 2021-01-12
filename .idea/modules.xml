@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dingding_replay.iml" filepath="$PROJECT_DIR$/dingding_replay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sp_dingding_replay.iml" filepath="$PROJECT_DIR$/sp_dingding_replay.iml" />
+    </modules>
+  </component>
+</project>
