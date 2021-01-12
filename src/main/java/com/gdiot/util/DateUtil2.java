@@ -22,7 +22,9 @@ public class DateUtil2 {
         return time;
     }
 
-    //获取前2天的日期，保证当月的
+    /**
+     * 获取前2天的日期，保证当月的
+     */
     public static String getSimToday1(int num) {
         Calendar cnow = Calendar.getInstance();
         Calendar c = Calendar.getInstance();

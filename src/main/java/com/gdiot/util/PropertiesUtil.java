@@ -7,17 +7,20 @@ import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
-
+/**
+ * @author ZhouHR
+ * @date 2021/01/12
+ */
 @Slf4j
 public class PropertiesUtil {
 
     private static final PropertiesUtil PROPERTIES_UTIL = new PropertiesUtil();
 
-    private static final Properties properties = null;
+    private static final Properties PROPERTIES = null;
 
     private static synchronized Properties getProperties() {
-        if (properties != null) {
-            return properties;
+        if (PROPERTIES != null) {
+            return PROPERTIES;
         }
         PropertiesUtil util = PropertiesUtil.getInstance();
         Properties properties = util.loadProperties("application.properties");
@@ -37,7 +40,7 @@ public class PropertiesUtil {
     /**
      * 加载配置文件
      *
-     * @param separator 系统路径
+     * @param fileName 系统路径
      * @return 返回Properties对象
      * @throws FileNotFoundException 抛出异常
      * @throws IOException           抛出异常
