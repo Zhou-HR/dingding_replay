@@ -2,6 +2,7 @@ package com.gdiot.mapper;
 
 import com.gdiot.entity.DingUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface DingUserMapper {
      * @param userId
      * @return
      */
-    List<DingUser> selectOne(String userId);
+    List<DingUser> selectOne(@Param("userId") String userId);
 
     /**
      * 更新用户信息
@@ -42,11 +43,4 @@ public interface DingUserMapper {
      * @return
      */
     List<DingUser> selectAllUserId();
-
-    /**
-     * 更新用户部门信息
-     *
-     * @param dingUser
-     */
-    void updateUserDept(DingUser dingUser);
 }

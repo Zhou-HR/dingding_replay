@@ -16,6 +16,7 @@ import java.util.List;
 public class DingDeptServiceImpl implements DingDeptService {
     @Autowired
     private DingDeptMapper dingDeptMapper;
+
     @Override
     public void insetDingDept(DingDept dingDept) {
         // 查询是否有，有的话替换，无的话插入

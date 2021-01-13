@@ -2,7 +2,6 @@ package com.gdiot.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.*;
@@ -13,9 +12,11 @@ import com.gdiot.entity.DingDept;
 import com.gdiot.entity.DingProcess;
 import com.gdiot.entity.DingUser;
 import com.gdiot.service.DingDeptService;
+import com.gdiot.service.DingProcessService;
 import com.gdiot.service.DingUserService;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,10 @@ import java.util.Map;
  */
 @Slf4j
 public class DingDataAnalysis {
+
     private DingUserService dingUserService;
     private DingDeptService dingDeptService;
+    private DingProcessService dingProcessService;
 
     /**
      * 获取Token
@@ -38,12 +41,12 @@ public class DingDataAnalysis {
      */
     public String getToken() {
         try {
-            DefaultDingTalkClient client = new DefaultDingTalkClient(DingUtils.tokenURL);
-            OapiGettokenRequest request = new OapiGettokenRequest();
-            request.setAppkey(DingUtils.APPKEY);
-            request.setAppsecret(DingUtils.APPSECRET);
-            request.setHttpMethod("GET");
-            OapiGettokenResponse response = client.execute(request);
+            DefaultDingTalkClient client = new DefaultDingTalkClient(DingUtils.TOKEN_URL);
+            OapiGettokenRequest req = new OapiGettokenRequest();
+            req.setAppkey(DingUtils.APPKEY);
+            req.setAppsecret(DingUtils.APPSECRET);
+            req.setHttpMethod("GET");
+            OapiGettokenResponse response = client.execute(req);
             return response.getAccessToken();
         } catch (ApiException e) {
             e.printStackTrace();
@@ -54,28 +57,27 @@ public class DingDataAnalysis {
     /**
      * 获取所有部门下的用户详情，并保存数据库
      *
-     * @param depId
+     * @param deptId
      * @param accessToken
      * @return
      */
-    public JSONArray getAllDeptUserDetail(String depId, String accessToken) {
-        System.out.println("depId:" + depId + "\n");
+    public JSONArray getAllDeptUserDetail(String deptId, String accessToken) {
+        System.out.println("deptId:" + deptId + "\n");
         //获取根目录下所有的子部门列表
-        String subDepList = getSubDeptList(depId, accessToken);
-        System.out.println("subDepList:" + subDepList + "\n");
+
+        List<Long> subDeptList = getSubDeptList(deptId, accessToken);
+        System.out.println("subDeptList:" + subDeptList + "\n");
+
         JSONArray jsonarr = new JSONArray();
 
-        List<String> list = analysisDeptList(subDepList);
-        if (list != null && list.size() > 0) {
-            //有子部门
-            for (int i = 0; i < list.size(); i++) {
-                String depId0 = list.get(i);
-
-                //获取部门下的用户
-                getDeptUserDetailSave(depId0, accessToken);
-
-                //获取子部门
-                JSONArray subDeptList0 = getAllDeptUserDetail(depId0, accessToken);
+        if (subDeptList != null && subDeptList.size() > 0) {
+            // 有子部门
+            for (int i = 0; i < subDeptList.size(); i++) {
+                String deptId0 = String.valueOf(subDeptList.get(i));
+                // 获取部门下的用户
+                getDeptUserDetailSave(deptId0, accessToken);
+                // 获取子部门
+                JSONArray subDeptList0 = getAllDeptUserDetail(deptId0, accessToken);
                 if (subDeptList0 != null && subDeptList0.size() > 0) {
                     jsonarr.add(subDeptList0.toString());
                 } else {
@@ -83,8 +85,8 @@ public class DingDataAnalysis {
                 }
             }
         } else {
-            //无子部门，获取部门下用户
-            getDeptUserDetailSave(depId, accessToken);
+            // 无子部门，获取部门下用户
+            getDeptUserDetailSave(deptId, accessToken);
             return null;
         }
         return jsonarr;
@@ -93,69 +95,45 @@ public class DingDataAnalysis {
     /**
      * 获取所有部门的详细信息
      *
-     * @param depId
+     * @param deptId
      * @param accessToken
      * @return
      */
-    public JSONArray getAllDeptDetail(String depId, String accessToken) {
-        System.out.println("depId:" + depId + "\n");
+    public JSONArray getAllDeptDetail(String deptId, String accessToken) {
+        System.out.println("deptId:" + deptId + "\n");
         if (dingDeptService == null) {
             dingDeptService = SpringContextUtils.getBean(DingDeptService.class);
         }
-        //获取根目录下所有的子部门列表
-        String subDepList = getSubDeptList(depId, accessToken);
+        // 获取根目录下所有的子部门列表
+        List<Long> subDeptList = getSubDeptList(deptId, accessToken);
         JSONArray jsonarr = new JSONArray();
+        if (subDeptList != null && subDeptList.size() > 0) {
+            // 有子部门
+            for (int i = 0; i < subDeptList.size(); i++) {
+                String deptId0 = String.valueOf(subDeptList.get(i));
+                System.out.println("depId0: " + i + ":" + deptId0 + "\n");
 
-        List<String> list = analysisDeptList(subDepList);
-        if (list != null && list.size() > 0) {
-            //有子部门
-            for (int i = 0; i < list.size(); i++) {
-                String depId0 = list.get(i);
-                System.out.println("depId0: " + i + ":" + depId0 + "\n");
-
-                //获取部门详情
-                DingDept dingDept = getDeptDetail(depId0, accessToken);
+                // 获取部门详情
+                DingDept dingDept = getDeptDetail(deptId0, accessToken);
                 dingDeptService.insetDingDept(dingDept);
 
-                //获取下一层子部门
-                JSONArray subDeptList0 = getAllDeptDetail(depId0, accessToken);
+                // 获取下一层子部门
+                JSONArray subDeptList0 = getAllDeptDetail(deptId0, accessToken);
                 if (subDeptList0 != null && subDeptList0.size() > 0) {
-                    System.out.println("subDepList0: " + subDeptList0 + "\n");
+                    System.out.println("subDeptList0: " + subDeptList0 + "\n");
                     jsonarr.add(subDeptList0.toString());
                 } else {
                     continue;
                 }
             }
         } else {
-            //无子部门，获取部门详情
-            //获取部门详情
-            DingDept dingDept = getDeptDetail(depId, accessToken);
+            // 无子部门，获取部门详情
+            // 获取部门详情
+            DingDept dingDept = getDeptDetail(deptId, accessToken);
             dingDeptService.insetDingDept(dingDept);
             return null;
         }
         return jsonarr;
-    }
-
-    /**
-     * 获取所有用户的父部门
-     *
-     * @param accessToken
-     */
-    public void getAllUserParentDept(String accessToken) {
-        if (dingUserService == null) {
-            dingUserService = SpringContextUtils.getBean(DingUserService.class);
-        }
-        List<DingUser> list = dingUserService.selectAllUserId();
-        for (DingUser user : list) {
-            String userId = user.getUserId();
-
-            DingUser dingUser = getUserParentDeptId(userId, accessToken);
-            if (dingUser != null) {
-                dingUserService.updateUserDept(dingUser);
-            } else {
-                continue;
-            }
-        }
     }
 
     /**
@@ -167,35 +145,44 @@ public class DingDataAnalysis {
      */
     public DingUser getUserDetail(String userId, String accessToken) {
         try {
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/user/get");
-            OapiUserGetRequest request = new OapiUserGetRequest();
-            request.setUserid(userId);
-            request.setHttpMethod("GET");
-            OapiUserGetResponse response = client.execute(request, accessToken);
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/get");
+            OapiV2UserGetRequest req = new OapiV2UserGetRequest();
+            req.setUserid(userId);
+            OapiV2UserGetResponse rsp = client.execute(req, accessToken);
 
-            System.out.print("getErrcode=" + response.getErrcode() + "\n");
+            System.out.print("getErrcode=" + rsp.getErrcode() + "\n");
 
-            long errCode = response.getErrcode();
+            long errCode = rsp.getErrcode();
+            OapiV2UserGetResponse.UserGetResponse result = rsp.getResult();
             if (errCode == 0) {
                 DingUser dingUser = new DingUser();
-                dingUser.setUserId(response.getUserid());
-                dingUser.setName(response.getName());
-                dingUser.setUnionid(response.getUnionid());
-                dingUser.setManagerId(response.getManagerUserId());
-                dingUser.setPosition(response.getPosition());
-                dingUser.setTel(response.getTel());
-                dingUser.setMobile(response.getMobile());
-                dingUser.setEmail(response.getEmail());
+                dingUser.setUserId(result.getUserid());
+                dingUser.setName(result.getName());
+                dingUser.setUnionid(result.getUnionid());
+                dingUser.setPosition(result.getTitle());
+                dingUser.setTelephone(result.getTelephone());
+                dingUser.setMobile(result.getMobile());
+                dingUser.setEmail(result.getEmail());
+                //所在部门
+                List<Long> deptIdList = result.getDeptIdList();
+                switch (deptIdList.size()) {
+                    case 1:
+                        dingUser.setDept1(String.valueOf(deptIdList.get(0)));
+                        break;
+                    case 2:
+                        dingUser.setDept1(String.valueOf(deptIdList.get(0)));
+                        dingUser.setDept2(String.valueOf(deptIdList.get(1)));
+                        break;
+                    default:
+                        break;
+                }
 
-                dingUser.setDept1(String.valueOf(response.getDepartment()));
-                dingUser.setWorkNo(response.getJobnumber());
-
-                //入职时间
-                dingUser.setStartWorkDate(String.valueOf(response.getHiredDate()));
-                dingUser.setWorkPlace(response.getWorkPlace());
-
-                //身份
-                List<OapiUserGetResponse.Roles> rolesList = response.getRoles() != null ? response.getRoles() : null;
+                dingUser.setWorkNo(result.getJobNumber());
+                // 入职时间
+                dingUser.setStartWorkDate(String.valueOf(result.getHiredDate()));
+                dingUser.setWorkPlace(result.getWorkPlace());
+                // 身份
+                List<OapiV2UserGetResponse.UserRole> rolesList = result.getRoleList() != null ? result.getRoleList() : null;
                 if (rolesList != null) {
                     int count = rolesList.size();
                     List<String> list = new ArrayList<>();
@@ -213,11 +200,12 @@ public class DingDataAnalysis {
             } else {
                 return null;
             }
-
-        } catch (ApiException e) {
+        } catch (
+                ApiException e) {
             e.printStackTrace();
             return null;
         }
+
     }
 
     /**
@@ -229,177 +217,26 @@ public class DingDataAnalysis {
      */
     public DingDept getDeptDetail(String depId, String accessToken) {
         try {
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/get");
-            OapiDepartmentGetRequest request = new OapiDepartmentGetRequest();
-            request.setId(depId);
-            request.setHttpMethod("GET");
-            OapiDepartmentGetResponse response = client.execute(request, accessToken);
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/get");
+            OapiV2DepartmentGetRequest req = new OapiV2DepartmentGetRequest();
+            req.setDeptId(Long.valueOf(depId));
+            OapiV2DepartmentGetResponse rsp = client.execute(req, accessToken);
 
-            System.out.print("getErrcode=" + response.getErrcode() + "/n");
+            System.out.println("getErrcode=" + rsp.getErrcode());
 
-            DingDept dingDept = new DingDept();
-            dingDept.setDeptId(depId);
-            dingDept.setDeptName(response.getName());
-            dingDept.setParentId(String.valueOf(response.getParentid()));
-            dingDept.setSourceidentifier(response.getSourceIdentifier());
-            dingDept.setDeptManagerId(response.getDeptManagerUseridList());
-            return dingDept;
-        } catch (ApiException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 获取子部门列表
-     *
-     * @param depId
-     * @param accessToken
-     * @return
-     */
-    public String getSubDeptList(String depId, String accessToken) {
-        try {
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list_ids");
-            OapiDepartmentListIdsRequest request = new OapiDepartmentListIdsRequest();
-
-            request.setId(depId);
-            //1根目录
-
-            request.setHttpMethod("GET");
-            OapiDepartmentListIdsResponse response = client.execute(request, accessToken);
-            String list = response.getBody();
-            return list;
-        } catch (ApiException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 获取部门下的所有用户详情
-     *
-     * @param depId
-     */
-    public void getDeptUserDetailSave(String depId, String accessToken) {
-        if (dingUserService == null) {
-            dingUserService = SpringContextUtils.getBean(DingUserService.class);
-        }
-        //获取指定部门ID的所有用户userID列表
-        String deptUserList = getDeptUserList(depId, accessToken);
-        System.out.println("depUserList: " + deptUserList + "\n");
-
-        List<String> list = analysisUserList(deptUserList);
-        if (list != null && list.size() > 0) {//部门下有用户
-            for (int i = 0; i < list.size(); i++) {
-                String userID0 = list.get(i);
-
-                //获取用户详情
-                DingUser dingUser = getUserDetail(userID0, accessToken);
-
-                if (dingUser != null) {
-                    //获取用户的所有父部门列表
-                    DingUser dingUserDept = getUserParentDeptId(userID0, accessToken);
-                    dingUser.setDept1(dingUserDept.getDept1());
-                    dingUser.setDept2(dingUserDept.getDept2());
-                    dingUser.setDept3(dingUserDept.getDept3());
-                    dingUser.setDept4(dingUserDept.getDept4());
-                    dingUser.setDept5(dingUserDept.getDept5());
-                    dingUserService.insertDingUser(dingUser);
-                } else {
-                    continue;
-                }
-            }
-        } else {//部门下无用户
-
-        }
-    }
-
-    /**
-     * 获取部门用户列表
-     *
-     * @param depId
-     * @param accessToken
-     * @return
-     */
-    public String getDeptUserList(String depId, String accessToken) {
-        try {
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/user/getDeptMember");
-            OapiUserGetDeptMemberRequest req = new OapiUserGetDeptMemberRequest();
-            req.setDeptId(depId);
-            req.setHttpMethod("GET");
-            OapiUserGetDeptMemberResponse rsp = client.execute(req, accessToken);
-            String list = rsp.getBody();
-            return list;
-        } catch (ApiException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 获取指定用户的所有父部门ID
-     *
-     * @param userId
-     * @param accessToken
-     * @return
-     */
-    public DingUser getUserParentDeptId(String userId, String accessToken) {
-        try {
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list_parent_depts");
-            OapiDepartmentListParentDeptsRequest request = new OapiDepartmentListParentDeptsRequest();
-            request.setUserId(userId);
-            request.setHttpMethod("GET");
-            OapiDepartmentListParentDeptsResponse response = client.execute(request, accessToken);
-            System.out.print("getCode=" + response.getCode() + "\n");
-            System.out.print("getErrorCode=" + response.getErrorCode() + "\n");
-            long errCode = response.getErrcode();
-            String dep = response.getDepartment();
-            String body = response.getBody();
+            long errCode = rsp.getErrcode();
+            OapiV2DepartmentGetResponse.DeptGetResponse result = rsp.getResult();
+            System.out.println("result---" + result.toString());
 
             if (errCode == 0) {
-                DingUser dingUser = new DingUser();
-                dingUser.setUserId(userId);
-
-                System.out.println("depList=" + dep);
-                List<List<Long>> Alllist = new ArrayList<List<Long>>();
-                JSONArray arr = JSONArray.parseArray(dep);
-                for (Object obj : arr) {
-                    String json = obj.toString();
-                    JSONArray arr0 = JSONArray.parseArray(json);
-                    int count = arr0.size();
-                    ArrayList<Long> list = new ArrayList<>();
-                    for (int i = 0; i < count; i++) {
-                        list.add(arr0.getLong(i));
-                        System.out.println("depl00=" + arr0.getLong(i));
-                    }
-                    if (count == 6) {
-                        dingUser.setDept1(String.valueOf(arr0.getLong(4)));
-                        dingUser.setDept2(String.valueOf(arr0.getLong(3)));
-                        dingUser.setDept3(String.valueOf(arr0.getLong(2)));
-                        dingUser.setDept4(String.valueOf(arr0.getLong(1)));
-                        dingUser.setDept5(String.valueOf(arr0.getLong(0)));
-                    }
-                    if (count == 5) {
-                        dingUser.setDept1(String.valueOf(arr0.getLong(3)));
-                        dingUser.setDept2(String.valueOf(arr0.getLong(2)));
-                        dingUser.setDept3(String.valueOf(arr0.getLong(1)));
-                        dingUser.setDept4(String.valueOf(arr0.getLong(0)));
-                    }
-                    if (count == 4) {
-                        dingUser.setDept1(String.valueOf(arr0.getLong(2)));
-                        dingUser.setDept2(String.valueOf(arr0.getLong(1)));
-                        dingUser.setDept3(String.valueOf(arr0.getLong(0)));
-                    }
-                    if (count == 3) {
-                        dingUser.setDept1(String.valueOf(arr0.getLong(1)));
-                        dingUser.setDept2(String.valueOf(arr0.getLong(0)));
-                    }
-                    if (count == 2) {
-                        dingUser.setDept1(String.valueOf(arr0.getLong(0)));
-                    }
-                    Alllist.add(list);
+                DingDept dingDept = new DingDept();
+                dingDept.setDeptId(depId);
+                dingDept.setDeptName(result.getName());
+                dingDept.setParentId(String.valueOf(result.getParentId()));
+                if (result.getDeptManagerUseridList() != null) {
+                    dingDept.setDeptManagerId(result.getDeptManagerUseridList().toString());
                 }
-                return dingUser;
+                return dingDept;
             } else {
                 return null;
             }
@@ -410,51 +247,136 @@ public class DingDataAnalysis {
     }
 
     /**
-     * 解析部门列表，返回部门列表list
+     * 获取子部门列表
      *
-     * @param subDepList
+     * @param deptId
+     * @param accessToken
      * @return
      */
-    public List<String> analysisDeptList(String subDepList) {
-        List<String> list = new ArrayList<>();
-        list.clear();
-        //解析子部门列表
-        JSONObject depjson = JSONObject.parseObject(subDepList);
-        if (depjson != null && depjson.containsKey("sub_dept_id_list")) {
-            JSONArray sub_dept_id_list = depjson.getJSONArray("sub_dept_id_list");
-            int sub_dept_id_list_size = sub_dept_id_list.size();
-            for (int i = 0; i < sub_dept_id_list_size; i++) {
-                long depId0 = sub_dept_id_list.getLong(i);
-                String depIdStr = String.valueOf(depId0);
-                list.add(depIdStr);
-            }
+    public List<Long> getSubDeptList(String deptId, String accessToken) {
+        try {
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/listsubid");
+            OapiV2DepartmentListsubidRequest req = new OapiV2DepartmentListsubidRequest();
+
+            req.setDeptId(Long.valueOf(deptId));
+            // 1 根目录
+
+            OapiV2DepartmentListsubidResponse rsp = client.execute(req, accessToken);
+
+            OapiV2DepartmentListsubidResponse.DeptListSubIdResponse result = rsp.getResult();
+
+            List<Long> list = result.getDeptIdList();
+            //System.out.println("list---" + list);
+            return list;
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return null;
         }
-        return list;
     }
 
     /**
-     * 解析用户列表，返回用户列表list
+     * 获取部门下的所有用户详情
      *
-     * @param depUserList
+     * @param deptId
+     */
+    public void getDeptUserDetailSave(String deptId, String accessToken) {
+        if (dingUserService == null) {
+            dingUserService = SpringContextUtils.getBean(DingUserService.class);
+        }
+        // 获取指定部门ID的所有用户userID列表
+        List<String> deptUserList = getDeptUserList(deptId, accessToken);
+        System.out.println("deptUserList: " + deptUserList + "\n");
+        if (deptUserList != null && deptUserList.size() > 0) {
+            // 部门下有用户
+            for (String userID0 : deptUserList) {
+                // 获取用户详情
+                DingUser dingUser = getUserDetail(userID0, accessToken);
+                dingUserService.insertDingUser(dingUser);
+            }
+        } else {
+            // 部门下无用户
+        }
+    }
+
+    /**
+     * 获取部门用户列表
+     *
+     * @param deptId
+     * @param accessToken
      * @return
      */
-    public List<String> analysisUserList(String depUserList) {
-        List<String> list = new ArrayList<>();
-        list.clear();
-        JSONObject json = JSONObject.parseObject(depUserList);
+    public List<String> getDeptUserList(String deptId, String accessToken) {
+        try {
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/user/listid");
+            OapiUserListidRequest req = new OapiUserListidRequest();
+            req.setDeptId(Long.valueOf(deptId));
+            OapiUserListidResponse rsp = client.execute(req, accessToken);
 
-        if (json != null && json.containsKey("userIds")) {
-            JSONArray userIds = json.getJSONArray("userIds");
-            System.out.println("userIds=" + userIds.toString() + "\n");
-            int userIdCount = userIds.size();
-            System.out.println("userIdCount=" + userIdCount + "\n");
-            for (int i = 0; i < userIdCount; i++) {
-                String userId0 = userIds.getString(i);
-                System.out.println("userId0: " + userId0 + "\n");
-                list.add(userId0);
+            OapiUserListidResponse.ListUserByDeptResponse result = rsp.getResult();
+
+            List<String> list = result.getUseridList();
+            return list;
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 获取所有开票审批的列表
+     *
+     * @param accessToken
+     * @param params
+     */
+    public void getAllProcessDetail(String accessToken, Map<String, Object> params) {
+        if (dingUserService == null) {
+            dingUserService = SpringContextUtils.getBean(DingUserService.class);
+        }
+        if (dingProcessService == null) {
+            dingProcessService = SpringContextUtils.getBean(DingProcessService.class);
+        }
+
+        long endTime = System.currentTimeMillis();
+        //开票申请开始时间
+        long startTime = endTime - 24 * 60 * 60 * 1000 * 1000;
+
+        if (params != null) {
+            if (params.containsKey("startTime")) {
+                startTime = (long) params.get("startTime");
+            }
+            if (params.containsKey("endTime")) {
+                endTime = (long) params.get("endTime");
             }
         }
-        return list;
+        log.info("startTime-----" + DateUtil.milliSecond2Date(String.valueOf(startTime), "yyyy-MM-dd HH:mm:ss"));
+        log.info("endTime-----" + DateUtil.milliSecond2Date(String.valueOf(endTime), "yyyy-MM-dd HH:mm:ss"));
+
+        List<DingUser> list = dingUserService.selectAllUserId();
+        for (DingUser user : list) {
+            String userId = null;
+            try {
+                userId = user.getUserId();
+            } catch (Exception e) {
+                log.info("e=" + e.toString());
+            }
+            if (userId != null) {
+                log.info("userId-----" + userId);
+                List<String> processIdList = getProcessListId(startTime, endTime, userId, accessToken);
+                log.info("processIdList=" + processIdList.toString());
+                if (processIdList != null && processIdList.size() > 0) {
+                    for (String processId : processIdList) {
+                        DingProcess dingProcess = getProcessInstance(processId, accessToken);
+                        if (dingProcess != null) {
+                            dingProcessService.insert(dingProcess);
+                        }
+                    }
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+        }
     }
 
     /**
@@ -477,12 +399,12 @@ public class DingDataAnalysis {
             req.setSize(10L);
             req.setCursor(0L);
             req.setUseridList(userId);
-            OapiProcessinstanceListidsResponse response = client.execute(req, accessToken);
-            if (response != null) {
-                long errCode = response.getErrcode();
+            OapiProcessinstanceListidsResponse rsp = client.execute(req, accessToken);
+            if (rsp != null) {
+                long errCode = rsp.getErrcode();
                 if (errCode == 0) {
-                    log.info("getBody-----" + response.getBody() + "\n");
-                    PageResult result = response.getResult();
+                    log.info("getBody-----" + rsp.getBody() + "\n");
+                    PageResult result = rsp.getResult();
                     id_list = result.getList();
                     log.info("id_list=" + id_list.toString());
                     if (id_list != null && id_list.size() > 0) {
@@ -507,15 +429,15 @@ public class DingDataAnalysis {
     public DingProcess getProcessInstance(String processId, String accessToken) {
         try {
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/get");
-            OapiProcessinstanceGetRequest request = new OapiProcessinstanceGetRequest();
-            request.setProcessInstanceId(processId);
-            OapiProcessinstanceGetResponse response = client.execute(request, accessToken);
-            long errCode = response.getErrcode();
+            OapiProcessinstanceGetRequest req = new OapiProcessinstanceGetRequest();
+            req.setProcessInstanceId(processId);
+            OapiProcessinstanceGetResponse rsp = client.execute(req, accessToken);
+            long errCode = rsp.getErrcode();
             log.info("errCode-----" + errCode);
 
-            DingProcess dingProcess = new DingProcess();
+            DingProcess dingProcess;
             if (errCode == 0) {
-                dingProcess = AnalysisProcessInstance(processId, response);
+                dingProcess = AnalysisProcessInstance(processId, rsp);
                 return dingProcess;
             } else {
                 return null;
@@ -525,88 +447,6 @@ public class DingDataAnalysis {
             return null;
         }
     }
-
-    /**
-     * 获取所有改造审批单的列表
-     *
-     * @param accessToken
-     * @param params
-     */
-   /* public void getAllProcessList(String accessToken, Map<String, Object> params) {
-        if (mIDingDingUserService == null) {
-            mIDingDingUserService = SpringContextUtils.getBean(IDingDingUserService.class);
-        }
-        if (mIDingAssessService == null) {
-            mIDingAssessService = SpringContextUtils.getBean(IDingAssessService.class);
-        }
-
-        long endTime = System.currentTimeMillis();
-        long startTime = endTime - 24 * 60 * 60 * 1000;
-        if (params != null) {
-            if (params.containsKey("startTime")) {
-                startTime = (long) params.get("startTime");
-            }
-            if (params.containsKey("endTime")) {
-                endTime = (long) params.get("endTime");
-            }
-        }
-        log.info("startTime-----" + DateUtil.milliSecond2Date(String.valueOf(startTime), "yyyy-MM-dd HH:mm:ss"));
-        log.info("endTime-----" + DateUtil.milliSecond2Date(String.valueOf(endTime), "yyyy-MM-dd HH:mm:ss"));
-
-//			JSONArray jsonArr = new JSONArray();
-        List<DingDingUser> list = mIDingDingUserService.selectAllUserId();
-        for (DingDingUser user : list) {
-            String userId = null;
-            try {
-                userId = user.getDdId();
-            } catch (Exception e) {
-                log.info("e=" + e.toString());
-            }
-            if (userId != null) {
-                log.info("userId-----" + userId);
-                List<String> id_list = getAssessListId(startTime, endTime, userId, accessToken);
-                log.info("id_list=" + id_list.toString());
-                if (id_list != null && id_list.size() > 0) {
-                    String dd_id;
-                    String assess_list;
-                    String start_time;
-                    String end_time;
-                    String create_time;
-                    DingAssessPo mDingAssessPo = new DingAssessPo();
-                    mDingAssessPo.setDd_id(userId);
-                    mDingAssessPo.setAssess_list(id_list.toString());
-                    mDingAssessPo.setStart_time(String.valueOf(startTime));
-                    mDingAssessPo.setEnd_time(String.valueOf(endTime));
-                    mIDingAssessService.insertDingAssess(mDingAssessPo);
-
-                    int list_size = id_list.size();
-                    for (int i = 0; i < list_size; i++) {
-                        String assessId = id_list.get(i);
-                        DingAssessDetailPo mDingAssessDetailPo = getAssessInstance(assessId, accessToken);
-                        if (mDingAssessDetailPo != null) {
-                            mIDingAssessService.insertDingAssessDetail(mDingAssessDetailPo);
-                        }
-                        String proj_code = mDingAssessDetailPo.getProjectCode();
-                        String applyId = mDingAssessDetailPo.getBusinessCode();
-                        String applyReasonType = mDingAssessDetailPo.getApplyReasonType();
-                        String auditResult = mDingAssessDetailPo.getAuditResult();
-                        String auditStatus = mDingAssessDetailPo.getAuditStatus();
-                        if ("agree".equals(auditResult) && "COMPLETED".equals(auditStatus)) {//审批通过的
-                            int result = JdbcErpOPRView.selectORPByProjCode(proj_code, applyId, applyReasonType, auditResult);
-                            int result2 = JdbcErpZYView.selectZYByProjCode(proj_code, applyId, applyReasonType, auditResult);
-                        }
-                    }
-                } else {
-                    continue;
-                }
-
-            } else {
-                continue;
-            }
-
-        }
-//			return jsonArr;
-    }*/
 
     /**
      * 解析实例详情
@@ -647,7 +487,9 @@ public class DingDataAnalysis {
         dingProcess.setProcessId(processId);
         dingProcess.setTitle(vo.getTitle());
         dingProcess.setStartTime(DateUtil.milliSecond2Date(String.valueOf(vo.getCreateTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
-        dingProcess.setFinishTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+        if (vo.getFinishTime() != null) {
+            dingProcess.setFinishTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+        }
         dingProcess.setOriginatorUserId(vo.getOriginatorUserid());
         dingProcess.setOriginatorDeptId(vo.getOriginatorDeptId());
         dingProcess.setOriginatorDeptName(vo.getOriginatorDeptName());
@@ -679,8 +521,6 @@ public class DingDataAnalysis {
                         dingProcess.setInvoiceCompany(value);
                     } else if ("合同名称及编号".equals(name) || "TextField-JZCI6WBK".equals(id)) {
                         dingProcess.setContractNameAndNumber(value);
-                    } else if ("合同（附件）".equals(name) || "DDAttachment_13F6MHAAZCZG0".equals(id)) {
-                        dingProcess.setContract(value);
                     } else if ("本次开票事由".equals(name) || "TextField_1R5WIZDM0LKW0".equals(id)) {
                         dingProcess.setInvoiceReason(value);
                     } else if ("发票种类".equals(name) || "DDSelectField_1CRQBOWMXAPS0".equals(id)) {

@@ -47,8 +47,8 @@ public class DataSenderTask implements Runnable {
             case "all_dept_detail":
                 getAllDeptDetail(data);
                 break;
-            case "all_user_parent_dept":
-                getAllUserParentDept();
+            case "all_process_detail":
+                getAllProcessDetail(msgMap);
                 break;
             default:
                 break;
@@ -71,11 +71,13 @@ public class DataSenderTask implements Runnable {
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
-    private void getAllUserParentDept() {
+    //获取开票审批列表
+    private void getAllProcessDetail(Map<String, Object> map) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
-        mDingDataAnalysis.getAllUserParentDept(accessToken);
+        mDingDataAnalysis.getAllProcessDetail(accessToken, map);
+        LOGGER.info("getAllProcessDetail over");
     }
 
     public AsyncService getAsyncService() {

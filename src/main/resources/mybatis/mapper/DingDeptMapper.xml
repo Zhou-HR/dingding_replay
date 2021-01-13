@@ -6,13 +6,12 @@
         <result column="dept_id" jdbcType="VARCHAR" property="deptId"/>
         <result column="dept_name" jdbcType="VARCHAR" property="deptName"/>
         <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
-        <result column="sourceIdentifier" jdbcType="VARCHAR" property="sourceidentifier"/>
         <result column="dept_manager_id" jdbcType="VARCHAR" property="deptManagerId"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, dept_id, dept_name, parent_id, sourceIdentifier, dept_manager_id, create_time,
+        id, dept_id, dept_name, parent_id, dept_manager_id, create_time,
         update_time
     </sql>
 
@@ -21,7 +20,7 @@
         <include refid="Base_Column_List"/>
         from ding_dept
         where 1 = 1
-        <if test="dep_id != null">
+        <if test="deptId != null">
             and dept_id = #{deptId,jdbcType=VARCHAR}
         </if>
         order by id desc
@@ -32,16 +31,14 @@
         <include refid="Base_Column_List"/>
         )values (
         default ,#{deptId,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
-        #{sourceidentifier,jdbcType=VARCHAR}, #{deptManagerId,jdbcType=VARCHAR}, default,
-        #{updateTime,jdbcType=TIMESTAMP})
+        #{deptManagerId,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="com.gdiot.entity.DingDept">
         update ding_dept
         set dept_id = #{deptId,jdbcType=VARCHAR},
         dept_name = #{deptName,jdbcType=VARCHAR},
         parent_id = #{parentId,jdbcType=VARCHAR},
-        sourceIdentifier = #{sourceidentifier,jdbcType=VARCHAR},
         dept_manager_id = #{deptManagerId,jdbcType=VARCHAR},
         update_time = #{updateTime,jdbcType=TIMESTAMP}
         where dept_id = #{deptId,jdbcType=VARCHAR}

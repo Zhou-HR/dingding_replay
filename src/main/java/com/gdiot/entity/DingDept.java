@@ -34,11 +34,6 @@ public class DingDept implements Serializable {
     private String parentId;
 
     /**
-     * 部门标识
-     */
-    private String sourceidentifier;
-
-    /**
      * 部门主管id
      */
     private String deptManagerId;

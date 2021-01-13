@@ -2,6 +2,7 @@ package com.gdiot.mapper;
 
 import com.gdiot.entity.DingDept;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,10 +17,10 @@ public interface DingDeptMapper {
     /**
      * 查询
      *
-     * @param depId
+     * @param deptId
      * @return
      */
-    List<DingDept> selectOne(String depId);
+    List<DingDept> selectOne(@Param("deptId") String deptId);
 
     /**
      * 更新

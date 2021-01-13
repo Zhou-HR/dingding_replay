@@ -15,7 +15,6 @@
         <result column="business_id" jdbcType="VARCHAR" property="businessId"/>
         <result column="invoice_company" jdbcType="VARCHAR" property="invoiceCompany"/>
         <result column="contract_name_and_number" jdbcType="VARCHAR" property="contractNameAndNumber"/>
-        <result column="contract" jdbcType="VARCHAR" property="contract"/>
         <result column="invoice_reason" jdbcType="VARCHAR" property="invoiceReason"/>
         <result column="invoice_type" jdbcType="VARCHAR" property="invoiceType"/>
         <result column="invoice_name" jdbcType="VARCHAR" property="invoiceName"/>
@@ -33,39 +32,38 @@
     </resultMap>
     <sql id="Base_Column_List">
     id, process_id, title, start_time, finish_time, originator_user_id, originator_dept_id, 
-    originator_dept_name, `status`, `result`, business_id, invoice_company, contract_name_and_number, 
-    contract, invoice_reason, invoice_type, invoice_name, taxpayer_number, address_and_telephone, 
+    originator_dept_name, STATUS, RESULT, business_id, invoice_company, contract_name_and_number,
+    invoice_reason, invoice_type, invoice_name, taxpayer_number, address_and_telephone,
     bank_and_account, invoice_content, invoice_amount, tax_rate, invoice_explain, invoice_start_time, 
     invoice_finish_time, create_time, update_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+    <select id="selectOne" resultType="com.gdiot.entity.DingProcess">
         select
         <include refid="Base_Column_List"/>
         from ding_process
-        where id = #{id,jdbcType=INTEGER}
+        where 1 = 1
+        <if test="processId != null">
+            and process_id = #{processId,jdbcType=VARCHAR}
+        </if>
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from ding_process
-    where id = #{id,jdbcType=INTEGER}
-    </delete>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingProcess"
-            useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingProcess">
         insert into ding_process (
         <include refid="Base_Column_List"/>
-        )values (#{processId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR},
+        )values (
+        default, #{processId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR},
         #{finishTime,jdbcType=VARCHAR}, #{originatorUserId,jdbcType=VARCHAR}, #{originatorDeptId,jdbcType=VARCHAR},
         #{originatorDeptName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR},
         #{businessId,jdbcType=VARCHAR}, #{invoiceCompany,jdbcType=VARCHAR}, #{contractNameAndNumber,jdbcType=VARCHAR},
-        #{contract,jdbcType=VARCHAR}, #{invoiceReason,jdbcType=VARCHAR}, #{invoiceType,jdbcType=VARCHAR},
-        #{invoiceName,jdbcType=VARCHAR}, #{taxpayerNumber,jdbcType=VARCHAR}, #{addressAndTelephone,jdbcType=VARCHAR},
-        #{bankAndAccount,jdbcType=VARCHAR}, #{invoiceContent,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=VARCHAR},
-        #{taxRate,jdbcType=VARCHAR}, #{invoiceExplain,jdbcType=VARCHAR}, #{invoiceStartTime,jdbcType=VARCHAR},
-        #{invoiceFinishTime,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-        )
+        #{invoiceReason,jdbcType=VARCHAR}, #{invoiceType,jdbcType=VARCHAR},#{invoiceName,jdbcType=VARCHAR},
+        #{taxpayerNumber,jdbcType=VARCHAR}, #{addressAndTelephone,jdbcType=VARCHAR},#{bankAndAccount,jdbcType=VARCHAR},
+        #{invoiceContent,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=VARCHAR},#{taxRate,jdbcType=VARCHAR},
+        #{invoiceExplain,jdbcType=VARCHAR}, #{invoiceStartTime,jdbcType=VARCHAR},#{invoiceFinishTime,jdbcType=VARCHAR},
+        default, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.gdiot.entity.DingProcess">
+    <update id="update" parameterType="com.gdiot.entity.DingProcess">
         update ding_process
         set process_id = #{processId,jdbcType=VARCHAR},
         title = #{title,jdbcType=VARCHAR},
@@ -74,12 +72,11 @@
         originator_user_id = #{originatorUserId,jdbcType=VARCHAR},
         originator_dept_id = #{originatorDeptId,jdbcType=VARCHAR},
         originator_dept_name = #{originatorDeptName,jdbcType=VARCHAR},
-        `status` = #{status,jdbcType=VARCHAR},
-        `result` = #{result,jdbcType=VARCHAR},
+        STATUS = #{status,jdbcType=VARCHAR},
+        RESULT = #{result,jdbcType=VARCHAR},
         business_id = #{businessId,jdbcType=VARCHAR},
         invoice_company = #{invoiceCompany,jdbcType=VARCHAR},
         contract_name_and_number = #{contractNameAndNumber,jdbcType=VARCHAR},
-        contract = #{contract,jdbcType=VARCHAR},
         invoice_reason = #{invoiceReason,jdbcType=VARCHAR},
         invoice_type = #{invoiceType,jdbcType=VARCHAR},
         invoice_name = #{invoiceName,jdbcType=VARCHAR},
@@ -92,8 +89,7 @@
         invoice_explain = #{invoiceExplain,jdbcType=VARCHAR},
         invoice_start_time = #{invoiceStartTime,jdbcType=VARCHAR},
         invoice_finish_time = #{invoiceFinishTime,jdbcType=VARCHAR},
-        create_time = #{createTime,jdbcType=TIMESTAMP},
         update_time = #{updateTime,jdbcType=TIMESTAMP}
-        where id = #{id,jdbcType=INTEGER}
+        where process_id = #{processId,jdbcType=VARCHAR}
     </update>
 </mapper>

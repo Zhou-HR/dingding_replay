@@ -22,11 +22,4 @@ public interface DingUserService {
      * @return
      */
     List<DingUser> selectAllUserId();
-
-    /**
-     * 更新用户部门信息
-     *
-     * @param dingUser
-     */
-    void updateUserDept(DingUser dingUser);
 }

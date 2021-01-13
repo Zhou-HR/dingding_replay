@@ -10,7 +10,7 @@ spring:
         port: 6379
 
 mybatis:
-    type-aliases-package: com.gdiot.ssm.entity
+    type-aliases-package: com.gdiot.entity
     config-locations: classpath:mybatis/mybatis-config.xml
     mapper-locations: classpath:mybatis/mapper/*.xml
 

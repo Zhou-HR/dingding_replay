@@ -21,7 +21,7 @@ public class DingUtils {
 //	public static Long AGENTID = 270133545L; // 自动分配微应用的ID
 //	public static String APPKEY = "ding72oqzkdtqfhfqepu";
 //	public static String APPSECRET = "KMt5fM_R3F-HcndXY4iXiwxe7sEvkKL4nFwFH1Utj-nk9X9W_mJOZqT4UX40abm6";
-    public static String tokenURL = "https://oapi.dingtalk.com/gettoken";
+    public static String TOKEN_URL = "https://oapi.dingtalk.com/gettoken";
     public static String sendMsgURL = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
     public static String getUserCountURL = "https://oapi.dingtalk.com/user/get_org_user_count";
 

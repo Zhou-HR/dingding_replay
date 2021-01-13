@@ -35,9 +35,4 @@ public class DingUserServiceImpl implements DingUserService {
     public List<DingUser> selectAllUserId() {
         return dingUserMapper.selectAllUserId();
     }
-
-    @Override
-    public void updateUserDept(DingUser dingUser) {
-        dingUserMapper.updateUserDept(dingUser);
-    }
 }

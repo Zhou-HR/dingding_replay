@@ -79,11 +79,6 @@ public class DingProcess implements Serializable {
     private String contractNameAndNumber;
 
     /**
-     * 合同
-     */
-    private String contract;
-
-    /**
      * 开票事由
      */
     private String invoiceReason;

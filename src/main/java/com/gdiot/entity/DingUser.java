@@ -34,11 +34,6 @@ public class DingUser implements Serializable {
     private String unionid;
 
     /**
-     * 主管的用户id
-     */
-    private String managerId;
-
-    /**
      * 职位
      */
     private String position;
@@ -46,7 +41,7 @@ public class DingUser implements Serializable {
     /**
      * 固定电话
      */
-    private String tel;
+    private String telephone;
 
     /**
      * 手机号
@@ -69,24 +64,9 @@ public class DingUser implements Serializable {
     private String dept1;
 
     /**
-     * 父部门
+     * 部门id
      */
     private String dept2;
-
-    /**
-     * 父部门
-     */
-    private String dept3;
-
-    /**
-     * 父部门
-     */
-    private String dept4;
-
-    /**
-     * 父部门
-     */
-    private String dept5;
 
     /**
      * 员工工号

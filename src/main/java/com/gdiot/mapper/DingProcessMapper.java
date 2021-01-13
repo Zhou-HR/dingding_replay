@@ -2,7 +2,10 @@ package com.gdiot.mapper;
 
 import com.gdiot.entity.DingProcess;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author ZhouHR
@@ -12,11 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface DingProcessMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    void insert(DingProcess record);
 
-    int insert(DingProcess record);
+    List<DingProcess> selectOne(@Param("processId") String processId);
 
-    DingProcess selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKey(DingProcess record);
+    void update(DingProcess dingProcess);
 }
