@@ -19,7 +19,7 @@ public class DingProcessServiceImpl implements DingProcessService {
     private DingProcessMapper dingProcessMapper;
 
     @Override
-    public void insert(DingProcess dingProcess) {
+    public void insertDingProcess(DingProcess dingProcess) {
         String processId = dingProcess.getProcessId();
         List<DingProcess> list = dingProcessMapper.selectOne(processId);
         if (list != null && list.size() > 0) {
@@ -27,5 +27,10 @@ public class DingProcessServiceImpl implements DingProcessService {
         } else {
             dingProcessMapper.insert(dingProcess);
         }
+    }
+
+    @Override
+    public List<DingProcess> selectDingProcessAgree(String startTime, String endTime) {
+        return dingProcessMapper.selectDingProcessAgree(startTime, endTime);
     }
 }

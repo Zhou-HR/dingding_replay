@@ -16,7 +16,6 @@ import com.gdiot.service.DingProcessService;
 import com.gdiot.service.DingUserService;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -338,9 +337,8 @@ public class DingDataAnalysis {
 
         long endTime = System.currentTimeMillis();
         //开票申请开始时间
-        long startTime = endTime - 24 * 60 * 60 * 1000 * 1000;
-
-        if (params != null) {
+        long startTime = endTime - 24 * 60 * 60 * 1000;
+        if (null != params) {
             if (params.containsKey("startTime")) {
                 startTime = (long) params.get("startTime");
             }
@@ -356,6 +354,7 @@ public class DingDataAnalysis {
             String userId = null;
             try {
                 userId = user.getUserId();
+                System.out.println("userId----" + userId);
             } catch (Exception e) {
                 log.info("e=" + e.toString());
             }
@@ -367,7 +366,7 @@ public class DingDataAnalysis {
                     for (String processId : processIdList) {
                         DingProcess dingProcess = getProcessInstance(processId, accessToken);
                         if (dingProcess != null) {
-                            dingProcessService.insert(dingProcess);
+                            dingProcessService.insertDingProcess(dingProcess);
                         }
                     }
                 } else {
@@ -488,7 +487,7 @@ public class DingDataAnalysis {
         dingProcess.setTitle(vo.getTitle());
         dingProcess.setStartTime(DateUtil.milliSecond2Date(String.valueOf(vo.getCreateTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
         if (vo.getFinishTime() != null) {
-            dingProcess.setFinishTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+            dingProcess.setEndTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
         }
         dingProcess.setOriginatorUserId(vo.getOriginatorUserid());
         dingProcess.setOriginatorDeptId(vo.getOriginatorDeptId());

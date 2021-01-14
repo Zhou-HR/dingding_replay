@@ -36,7 +36,7 @@ public class DingProcess implements Serializable {
     /**
      * 结束时间
      */
-    private String finishTime;
+    private String endTime;
 
     /**
      * 发起人id
@@ -137,6 +137,10 @@ public class DingProcess implements Serializable {
      * 预计回款时间
      */
     private String invoiceFinishTime;
+    /**
+     * 到款金额
+     */
+    private String amountReceived;
 
     /**
      * 创建时间

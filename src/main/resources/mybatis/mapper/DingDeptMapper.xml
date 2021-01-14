@@ -40,7 +40,7 @@
         dept_name = #{deptName,jdbcType=VARCHAR},
         parent_id = #{parentId,jdbcType=VARCHAR},
         dept_manager_id = #{deptManagerId,jdbcType=VARCHAR},
-        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        update_time = CURRENT_TIMESTAMP
         where dept_id = #{deptId,jdbcType=VARCHAR}
     </update>
 </mapper>

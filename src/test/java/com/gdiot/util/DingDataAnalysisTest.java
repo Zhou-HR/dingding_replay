@@ -37,7 +37,7 @@ class DingDataAnalysisTest {
     }
 
     @Test
-    void getAllProcessList() {
+    void getAllProcessDetail() {
         Map<String, Object> params = null;
         DingDataAnalysis dataAnalysis = new DingDataAnalysis();
         String accessToken = dataAnalysis.getToken();

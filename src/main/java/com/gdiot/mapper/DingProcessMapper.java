@@ -20,4 +20,6 @@ public interface DingProcessMapper {
     List<DingProcess> selectOne(@Param("processId") String processId);
 
     void update(DingProcess dingProcess);
+
+    List<DingProcess> selectDingProcessAgree(String startTime, String endTime);
 }

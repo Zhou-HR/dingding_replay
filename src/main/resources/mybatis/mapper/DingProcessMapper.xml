@@ -6,7 +6,7 @@
         <result column="process_id" jdbcType="VARCHAR" property="processId"/>
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
-        <result column="finish_time" jdbcType="VARCHAR" property="finishTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
         <result column="originator_user_id" jdbcType="VARCHAR" property="originatorUserId"/>
         <result column="originator_dept_id" jdbcType="VARCHAR" property="originatorDeptId"/>
         <result column="originator_dept_name" jdbcType="VARCHAR" property="originatorDeptName"/>
@@ -27,15 +27,16 @@
         <result column="invoice_explain" jdbcType="VARCHAR" property="invoiceExplain"/>
         <result column="invoice_start_time" jdbcType="VARCHAR" property="invoiceStartTime"/>
         <result column="invoice_finish_time" jdbcType="VARCHAR" property="invoiceFinishTime"/>
+        <result column="amount_received" jdbcType="VARCHAR" property="amountReceived"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, process_id, title, start_time, finish_time, originator_user_id, originator_dept_id, 
+    id, process_id, title, start_time, end_time, originator_user_id, originator_dept_id,
     originator_dept_name, STATUS, RESULT, business_id, invoice_company, contract_name_and_number,
     invoice_reason, invoice_type, invoice_name, taxpayer_number, address_and_telephone,
     bank_and_account, invoice_content, invoice_amount, tax_rate, invoice_explain, invoice_start_time, 
-    invoice_finish_time, create_time, update_time
+    invoice_finish_time, amount_received, create_time, update_time
     </sql>
 
     <select id="selectOne" resultType="com.gdiot.entity.DingProcess">
@@ -48,19 +49,34 @@
         </if>
     </select>
 
+    <select id="selectDingProcessAgree" resultType="com.gdiot.entity.DingProcess">
+        select
+        <include refid="Base_Column_List"/>
+        from ding_process t
+        where 1=1
+        <if test="startTime != null">
+            and t.update_time&gt;=FROM_UNIXTIME(#{startTime}/1000 ,'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endTime != null">
+            and t.update_time&lt;=FROM_UNIXTIME(#{endTime}/1000,'%Y-%m-%d %H:%i:%s')
+        </if>
+        and RESULT='agree' AND STATUS='COMPLETED'
+        order by t.update_time desc
+    </select>
+
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingProcess">
         insert into ding_process (
         <include refid="Base_Column_List"/>
         )values (
         default, #{processId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR},
-        #{finishTime,jdbcType=VARCHAR}, #{originatorUserId,jdbcType=VARCHAR}, #{originatorDeptId,jdbcType=VARCHAR},
+        #{endTime,jdbcType=VARCHAR}, #{originatorUserId,jdbcType=VARCHAR}, #{originatorDeptId,jdbcType=VARCHAR},
         #{originatorDeptName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR},
         #{businessId,jdbcType=VARCHAR}, #{invoiceCompany,jdbcType=VARCHAR}, #{contractNameAndNumber,jdbcType=VARCHAR},
         #{invoiceReason,jdbcType=VARCHAR}, #{invoiceType,jdbcType=VARCHAR},#{invoiceName,jdbcType=VARCHAR},
         #{taxpayerNumber,jdbcType=VARCHAR}, #{addressAndTelephone,jdbcType=VARCHAR},#{bankAndAccount,jdbcType=VARCHAR},
         #{invoiceContent,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=VARCHAR},#{taxRate,jdbcType=VARCHAR},
         #{invoiceExplain,jdbcType=VARCHAR}, #{invoiceStartTime,jdbcType=VARCHAR},#{invoiceFinishTime,jdbcType=VARCHAR},
-        default, #{updateTime,jdbcType=TIMESTAMP})
+        #{amountReceived,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
 
     <update id="update" parameterType="com.gdiot.entity.DingProcess">
@@ -68,7 +84,7 @@
         set process_id = #{processId,jdbcType=VARCHAR},
         title = #{title,jdbcType=VARCHAR},
         start_time = #{startTime,jdbcType=VARCHAR},
-        finish_time = #{finishTime,jdbcType=VARCHAR},
+        end_time = #{endTime,jdbcType=VARCHAR},
         originator_user_id = #{originatorUserId,jdbcType=VARCHAR},
         originator_dept_id = #{originatorDeptId,jdbcType=VARCHAR},
         originator_dept_name = #{originatorDeptName,jdbcType=VARCHAR},
@@ -89,7 +105,8 @@
         invoice_explain = #{invoiceExplain,jdbcType=VARCHAR},
         invoice_start_time = #{invoiceStartTime,jdbcType=VARCHAR},
         invoice_finish_time = #{invoiceFinishTime,jdbcType=VARCHAR},
-        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        amount_received = #{amountReceived,jdbcType=VARCHAR},
+        update_time = CURRENT_TIMESTAMP
         where process_id = #{processId,jdbcType=VARCHAR}
     </update>
 </mapper>
