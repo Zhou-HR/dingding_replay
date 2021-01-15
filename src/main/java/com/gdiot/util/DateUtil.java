@@ -18,7 +18,7 @@ public class DateUtil {
      */
     public static boolean ifCurrentTimeFree(long time) {
         boolean isFree = true;
-        //毫秒
+        // 单位：毫秒
         long startTime = time + 30 * 60 * 1000;
         long endTime = time + 33 * 60 * 1000;
         long currentTime = System.currentTimeMillis();

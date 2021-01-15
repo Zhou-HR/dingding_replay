@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * MD5工具类
+ *
  * @author ZhouHR
  * @date 2021/01/12
  */
@@ -12,7 +14,6 @@ public class MD5Util {
         try {
             // 创建加密对象
             MessageDigest digest = MessageDigest.getInstance("md5");
-
             // 调用加密对象的方法，加密的动作已经完成
             byte[] bs = digest.digest(pwd.getBytes());
             // 接下来，我们要对加密后的结果，进行优化，按照mysql的优化思路走
@@ -46,13 +47,5 @@ public class MD5Util {
             e.printStackTrace();
         }
         return "";
-    }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        String pwd = MD5Util.getPwd("111111" + "{1q@!}");
-        System.out.println(pwd);
     }
 }

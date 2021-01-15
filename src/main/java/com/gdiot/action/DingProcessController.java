@@ -42,7 +42,7 @@ public class DingProcessController {
         // 开票申请开始时间
         String startTime = null;
         Map<String, Object> map = new HashMap<>();
-        // 传参 开始时间 结束时间
+        // 传参 开始时间和结束时间
         if (params != null && !params.isEmpty()) {
             if (params.containsKey("startTime")) {
                 startTime = params.get("startTime");

@@ -41,10 +41,10 @@ public class DingDataAnalysis {
      */
     public String getToken() {
         try {
-            DefaultDingTalkClient client = new DefaultDingTalkClient(DingUtils.TOKEN_URL);
+            DefaultDingTalkClient client = new DefaultDingTalkClient(DingDingConstants.TOKEN_URL);
             OapiGettokenRequest req = new OapiGettokenRequest();
-            req.setAppkey(DingUtils.APPKEY);
-            req.setAppsecret(DingUtils.APPSECRET);
+            req.setAppkey(DingDingConstants.APPKEY);
+            req.setAppsecret(DingDingConstants.APPSECRET);
             req.setHttpMethod("GET");
             OapiGettokenResponse response = client.execute(req);
             return response.getAccessToken();
@@ -395,7 +395,7 @@ public class DingDataAnalysis {
             // 根据用户ID，获取开票审批数据
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/listids");
             OapiProcessinstanceListidsRequest req = new OapiProcessinstanceListidsRequest();
-            req.setProcessCode(DingUtils.PROCESS_CODE);
+            req.setProcessCode(DingDingConstants.PROCESS_CODE);
             req.setStartTime(startTime);
             req.setEndTime(endTime);
             req.setSize(10L);

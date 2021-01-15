@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PropertiesUtil {
 
     private static final PropertiesUtil PROPERTIES_UTIL = new PropertiesUtil();
-
     private static final Properties PROPERTIES = null;
 
     private static synchronized Properties getProperties() {
@@ -93,12 +92,8 @@ public class PropertiesUtil {
     }
 
     public static PropertiesUtil getInstance() {
-        return PROPERTIES_UTIL;
-    }
 
-    public static void main(String[] args) {
-        String str = PropertiesUtil.getValue("erp.url");
-        System.out.println(str);
+        return PROPERTIES_UTIL;
     }
 
 }

@@ -63,34 +63,27 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * HttpClient工具类
  *
- * @author 唐鑫炯
+ * @author ZhouHR
+ * @date 2021/01/12
  */
 @Slf4j
 public class HttpClientUtil {
-
     //连接池最大连接数
     private final static Integer MAX_TOTAL = 500;
-
     //路由最大连接数
     private final static Integer MAX_PER_ROUTE = 500;
-
     //连接建立后数据传输超时时长
     private final static Integer socketTimeout = 35000;
-
     // 建立连接超时时长
     private final static Integer connectTimeout = 35000;
-
     //建立请求超时时长
     private final static Integer connectionRequestTimeout = 35000;
-
     private final static String DEFAULT_CHARSET = "UTF-8";
-
     private static PoolingHttpClientConnectionManager connManager = null;
 
     static {
         RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create();
         registryBuilder.register("http", new PlainConnectionSocketFactory());
-
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             SSLContext sslContext = SSLContexts.custom().useTLS().loadTrustMaterial(trustStore, new TrustStrategy() {
@@ -108,9 +101,7 @@ public class HttpClientUtil {
         } catch (NoSuchAlgorithmException e) {
             log.error(e.getMessage());
         }
-
         Registry<ConnectionSocketFactory> registry = registryBuilder.build();
-
         connManager = new PoolingHttpClientConnectionManager(registry);
         ConnectionConfig connectionConfig = ConnectionConfig.custom()
                 .setMalformedInputAction(CodingErrorAction.IGNORE)
@@ -147,6 +138,7 @@ public class HttpClientUtil {
      * @return
      */
     public static String get(String url, String charset) {
+
         return get(url, null, charset);
     }
 
@@ -163,18 +155,14 @@ public class HttpClientUtil {
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-
         //将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-
         //参数不为空
         if (CollectionUtils.isNotEmpty(paramslist)) {
             url = url + "?" + URLEncodedUtils.format(paramslist, getCharset(charset));
         }
-
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramslist.toString());
         String resultStr = excute(new HttpGet(url), charset);
-//		log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramslist.toString(),resultStr);
         return resultStr;
     }
 
@@ -185,16 +173,14 @@ public class HttpClientUtil {
             String json = gson.toJson(paramsMap);
             StringEntity s = new StringEntity(json.toString(), "UTF-8");
             s.setContentEncoding(charset);
-            s.setContentType("application/json");//发送json数据需要设置contentType
+            //发送json数据需要设置contentType
+            s.setContentType("application/json");
             httpPost.setEntity(s);
         } catch (Exception e) {
-//			log.error("UrlEncodedFormEntity转换字符异常,{}",e.getMessage());
             System.out.println("e.getMessage()-----" + e.getMessage());
             return e.getMessage();
         }
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramsMap.toString());
-//		System.out.println("开始调用接口,接口地址[{}],参数[{}]-----" + url);
-//		System.out.println("开始调用接口,接口地址[{}],参数[{}]-----" + paramsMap.toString());
         String resultStr = excute(httpPost, charset);
         log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]", url, paramsMap.toString(), resultStr);
         return resultStr;
@@ -212,7 +198,8 @@ public class HttpClientUtil {
             String json = gson.toJson(paramsMap);
             StringEntity s = new StringEntity(json.toString(), "UTF-8");
             s.setContentEncoding(charset);
-            s.setContentType("application/json");//发送json数据需要设置contentType
+            //发送json数据需要设置contentType
+            s.setContentType("application/json");
             httpPost.setEntity(s);
         } catch (Exception e) {
             log.error("Exception,{}", e.getMessage());
@@ -221,7 +208,6 @@ public class HttpClientUtil {
 
         log.info("开始调用接口,接口地址[{}],headers[{}],参数[{}]", url, headers, paramsMap.toString());
         String resultStr = excute(httpPost, charset);
-//		log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramsMap.toString(),resultStr);
         return resultStr;
     }
 
@@ -238,10 +224,8 @@ public class HttpClientUtil {
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-
         //将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-
         //httppost请求
         HttpPost httpPost = new HttpPost(url);
         try {
@@ -255,7 +239,6 @@ public class HttpClientUtil {
         }
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramslist.toString());
         String resultStr = excute(httpPost, charset);
-//		log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramslist.toString(),resultStr);
         return resultStr;
     }
 
@@ -264,10 +247,8 @@ public class HttpClientUtil {
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-
         //将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-
         //httppost请求
         HttpPost httpPost = new HttpPost(url);
         try {
@@ -321,7 +302,6 @@ public class HttpClientUtil {
 
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramStr);
         String resultStr = excute(httpPost, charset);
-//		log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramStr,resultStr);
         return resultStr;
     }
 
@@ -375,7 +355,6 @@ public class HttpClientUtil {
                 log.error("关闭CloseableHttpResponse异常," + e.getMessage());
             }
         }
-
     }
 
     /**
@@ -415,15 +394,9 @@ public class HttpClientUtil {
      * @return
      */
     private static String getCharset(String charset) {
-        if (StringUtils.isEmpty(charset)) return DEFAULT_CHARSET;
+        if (StringUtils.isEmpty(charset)) {
+            return DEFAULT_CHARSET;
+        }
         return charset;
-    }
-
-    public static void main(String[] args) {
-        Map<String, String> param = new HashMap<String, String>();
-        param.put("imei", "866971030389428");
-        param.put("type", "power_off");
-        String result = HttpClientUtil.postJson("http://120.55.163.230:9081/gdiot/cmd/set_power", param, "utf8");
-        System.out.println(result);
     }
 }

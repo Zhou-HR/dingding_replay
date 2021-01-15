@@ -29,7 +29,6 @@ public class ExecutorConfiguration {
         //当pool已满，不在新线程中执行，而是由调用者所在的线程执行
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
-
         LOGGER.info("task: asyncServiceExecutor init success");
         return executor;
     }

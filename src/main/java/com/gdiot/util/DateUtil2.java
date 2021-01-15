@@ -23,7 +23,6 @@ public class DateUtil2 {
             String time1 = "20" + time.substring(0, 2) + "-" + time.substring(2, 4) + "-" + time.substring(4, 6) + " ";
             time1 += time.substring(6, 8) + ":" + time.substring(8, 10) + ":" + time.substring(10, 12);
             return time1;
-
         }
         return time;
     }
@@ -43,17 +42,13 @@ public class DateUtil2 {
             c = Calendar.getInstance();
             c.set(Calendar.DAY_OF_MONTH, 1);
         }
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         return sdf.format(c.getTime());
     }
 
     public static String getSimToday2() {
         Date date = new Date();
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         return sdf.format(date);
     }
 
@@ -64,17 +59,13 @@ public class DateUtil2 {
      */
     public static String getToday() {
         Date date = new Date();
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
         return sdf.format(date);
     }
 
     public static String getToday2() {
         Date date = new Date();
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         return sdf.format(date);
     }
 
@@ -119,9 +110,7 @@ public class DateUtil2 {
      */
     public static String getTodayTime() {
         Date date = new Date();
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
         return sdf.format(date);
     }
 }
