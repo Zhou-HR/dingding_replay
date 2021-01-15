@@ -1,24 +1,22 @@
 package com.gdiot.action;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import com.gdiot.entity.DingProcess;
 import com.gdiot.service.AsyncService;
 import com.gdiot.service.DingProcessService;
 import com.gdiot.task.DataSenderTask;
 import com.gdiot.util.SpringContextUtils;
-import com.google.gson.Gson;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author ZhouHR
@@ -27,7 +25,6 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/process")
 public class DingProcessController {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DingProcessController.class);
     @Autowired
     private AsyncService asyncService;
     @Autowired
@@ -39,12 +36,13 @@ public class DingProcessController {
      * @return
      */
     @RequestMapping("/getAllProcessDetail")
-    public String getAllProcessDetail(@RequestBody Map<String, String> params) {
-        //开票申请结束时间
+    public String getAllProcessDetail(@RequestBody Map<String, String> params) throws IOException {
+        // 开票申请结束时间
         String endTime = null;
-        //开票申请开始时间
+        // 开票申请开始时间
         String startTime = null;
         Map<String, Object> map = new HashMap<>();
+        // 传参 开始时间 结束时间
         if (params != null && !params.isEmpty()) {
             if (params.containsKey("startTime")) {
                 startTime = params.get("startTime");
@@ -55,29 +53,34 @@ public class DingProcessController {
             map.put("startTime", startTime);
             map.put("endTime", endTime);
         }
-        //更新开票申请数据库
+
+        // 更新开票申请数据库
         DataSenderTask task = new DataSenderTask(map, "all_process_detail");
         task.setAsyncService(asyncService);
         asyncService.executeAsync(task);
 
-        //休眠
+        // 休眠，等待数据库更新完成
         try {
-            Thread.sleep(20000);
+            Thread.sleep(25000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         List<DingProcess> dingProcessList;
         if (dingProcessService == null) {
             dingProcessService = SpringContextUtils.getBean(DingProcessService.class);
         }
-        LOGGER.info("startTime---" + startTime);
-        LOGGER.info("endTime---" + endTime);
-
+        // 从数据库获取开票申请列表
         dingProcessList = dingProcessService.selectDingProcessAgree(startTime, endTime);
-
-        Gson gson = new Gson();
-        String json = gson.toJson(dingProcessList);
-        return json;
+        // List转成json字符串
+        String jsonOutput = JSON.toJSONString(dingProcessList, (ValueFilter) (object, ame, value) -> {
+            // null值转成""
+            if (value == null) {
+                return "";
+            }
+            return value;
+        });
+        return jsonOutput;
     }
 
 }

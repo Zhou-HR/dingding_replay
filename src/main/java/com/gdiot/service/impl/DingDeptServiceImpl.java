@@ -19,14 +19,14 @@ public class DingDeptServiceImpl implements DingDeptService {
 
     @Override
     public void insetDingDept(DingDept dingDept) {
-        // 查询是否有，有的话替换，无的话插入
         String depId = dingDept.getDeptId();
+        // 查询是否有，有的话替换，无的话插入
         List<DingDept> list = dingDeptMapper.selectOne(depId);
         if (list != null && list.size() > 0) {
-            //已存在
+            // 已存在
             dingDeptMapper.update(dingDept);
         } else {
-            //不存在
+            // 不存在
             dingDeptMapper.insert(dingDept);
         }
     }

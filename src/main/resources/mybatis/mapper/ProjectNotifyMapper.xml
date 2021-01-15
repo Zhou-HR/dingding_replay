@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdiot.mapper.ProjectNotifyMapper">
+    <resultMap id="BaseResultMap" type="com.gdiot.entity.ProjectNotify">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="notify" jdbcType="INTEGER" property="notify"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, user_id, NAME, NOTIFY
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from project_notify
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from project_notify
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.ProjectNotify">
+        insert into project_notify (
+        <include refid="Base_Column_List"/>
+        )values (
+        default, #{userId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{notify,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.gdiot.entity.ProjectNotify">
+        update project_notify
+        set user_id = #{userId,jdbcType=VARCHAR},
+        NAME = #{name,jdbcType=VARCHAR},
+        NOTIFY = #{notify,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

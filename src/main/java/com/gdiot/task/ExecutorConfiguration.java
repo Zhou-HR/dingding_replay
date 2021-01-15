@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-
 /**
  * @author ZhouHR
  * @date 2021/01/12
@@ -22,7 +21,6 @@ public class ExecutorConfiguration {
 
     @Bean
     public Executor asyncServiceExecutor() {
-
         ThreadPoolTaskExecutor executor = new VisiableThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(5);

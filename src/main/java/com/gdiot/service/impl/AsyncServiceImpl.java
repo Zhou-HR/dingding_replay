@@ -15,12 +15,7 @@ public class AsyncServiceImpl implements AsyncService {
     @Override
     @Async("asyncServiceExecutor")
     public void executeAsync(Runnable runnable) {
-        runnable.run();
-    }
-
-    @Override
-    @Async("asyncMqttServiceExecutor")
-    public void executeMqttAsync(Runnable runnable) {
+        //启动线程
         runnable.run();
     }
 }

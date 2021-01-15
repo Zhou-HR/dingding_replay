@@ -12,6 +12,12 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateUtil2 {
 
+    /**
+     * 警告时间
+     *
+     * @param time
+     * @return
+     */
     public static String dealWarningTime(String time) {
         if (StringUtils.isNotEmpty(time) && time.length() == 12) {
             String time1 = "20" + time.substring(0, 2) + "-" + time.substring(2, 4) + "-" + time.substring(4, 6) + " ";
@@ -24,13 +30,16 @@ public class DateUtil2 {
 
     /**
      * 获取前2天的日期，保证当月的
+     *
+     * @param num
+     * @return
      */
     public static String getSimToday1(int num) {
         Calendar cnow = Calendar.getInstance();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_MONTH, num);
-        if (c.get(Calendar.MONTH) != cnow.get(Calendar.MONTH))//不是同一个月
-        {
+        if (c.get(Calendar.MONTH) != cnow.get(Calendar.MONTH)) {
+            //不是同一个月
             c = Calendar.getInstance();
             c.set(Calendar.DAY_OF_MONTH, 1);
         }
@@ -103,6 +112,11 @@ public class DateUtil2 {
 
     }
 
+    /**
+     * 获取当前时间
+     *
+     * @return
+     */
     public static String getTodayTime() {
         Date date = new Date();
 
@@ -110,9 +124,4 @@ public class DateUtil2 {
 
         return sdf.format(date);
     }
-
-    public static void main(String[] args) {
-        System.out.println(getSimToday1(-2));
-    }
-
 }

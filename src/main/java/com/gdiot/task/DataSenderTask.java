@@ -41,12 +41,15 @@ public class DataSenderTask implements Runnable {
         LOGGER.info("task: DataSenderTask run-msgMap :" + msgMap);
 
         switch (type) {
+            // 通讯录列表解析入库
             case "all_dept_user_detail":
                 getAllDeptUserDetail(data);
                 break;
+            // 部门列表解析入库
             case "all_dept_detail":
                 getAllDeptDetail(data);
                 break;
+            // 开票审批列表解析入库
             case "all_process_detail":
                 getAllProcessDetail(msgMap);
                 break;
@@ -55,27 +58,47 @@ public class DataSenderTask implements Runnable {
         }
     }
 
+    /**
+     * 通讯录列表解析入库
+     *
+     * @param depId
+     */
     private void getAllDeptUserDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
+        // 获取Token
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
+        // 获取所有部门下的用户详情，并保存数据库
         JSONArray userListDetail = mDingDataAnalysis.getAllDeptUserDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
+    /**
+     * 部门列表解析入库
+     *
+     * @param depId
+     */
     private void getAllDeptDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
+        // 获取Token
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
+        // 获取所有部门的详细信息
         JSONArray userListDetail = mDingDataAnalysis.getAllDeptDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
-    //获取开票审批列表
+    /**
+     * 开票审批列表解析入库
+     *
+     * @param map
+     */
     private void getAllProcessDetail(Map<String, Object> map) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
+        // 获取Token
         String accessToken = mDingDataAnalysis.getToken();
         System.out.println("AccessToken=" + accessToken);
+        // 获取所有开票审批的列表
         mDingDataAnalysis.getAllProcessDetail(accessToken, map);
         LOGGER.info("getAllProcessDetail over");
     }

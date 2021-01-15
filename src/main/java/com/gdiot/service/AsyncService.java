@@ -5,15 +5,11 @@ package com.gdiot.service;
  * @date 2021/01/12
  */
 public interface AsyncService {
-	/**
-	 *
-	 * @param runnable
-	 */
-	void executeAsync(Runnable runnable );
 
-	/**
-	 *
-	 * @param runnable
-	 */
-	void executeMqttAsync(Runnable runnable );
+    /**
+     * 执行异步线程
+     *
+     * @param runnable
+     */
+    void executeAsync(Runnable runnable);
 }

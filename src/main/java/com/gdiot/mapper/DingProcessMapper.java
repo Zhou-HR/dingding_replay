@@ -14,12 +14,34 @@ import java.util.List;
 @Mapper
 @Component
 public interface DingProcessMapper {
-
+    /**
+     * 增加
+     *
+     * @param record
+     */
     void insert(DingProcess record);
 
+    /**
+     * 查询
+     *
+     * @param processId
+     * @return
+     */
     List<DingProcess> selectOne(@Param("processId") String processId);
 
+    /***
+     * 更新
+     *
+     * @param dingProcess
+     */
     void update(DingProcess dingProcess);
 
+    /**
+     * 查询
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     List<DingProcess> selectDingProcessAgree(String startTime, String endTime);
 }

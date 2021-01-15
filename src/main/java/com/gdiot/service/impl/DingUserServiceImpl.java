@@ -23,16 +23,17 @@ public class DingUserServiceImpl implements DingUserService {
         String userId = dingUser.getUserId();
         List<DingUser> list = dingUserMapper.selectOne(userId);
         if (list != null && list.size() > 0) {
-            //已存在
+            // 已存在
             dingUserMapper.update(dingUser);
         } else {
-            //不存在
+            // 不存在
             dingUserMapper.insert(dingUser);
         }
     }
 
     @Override
     public List<DingUser> selectAllUserId() {
+        // 查询所有用户id
         return dingUserMapper.selectAllUserId();
     }
 }

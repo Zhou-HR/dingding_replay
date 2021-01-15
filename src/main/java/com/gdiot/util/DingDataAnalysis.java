@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description:对接钉钉的工具类
- * @Author:zhangjieqiong
- * @Date:2018/3/19 下午2:59
+ * 对接钉钉的工具类
+ *
+ * @author ZhouHR
+ * @date 2021/01/12
  */
 @Slf4j
 public class DingDataAnalysis {
@@ -62,8 +63,7 @@ public class DingDataAnalysis {
      */
     public JSONArray getAllDeptUserDetail(String deptId, String accessToken) {
         System.out.println("deptId:" + deptId + "\n");
-        //获取根目录下所有的子部门列表
-
+        // 获取根目录下所有的子部门列表
         List<Long> subDeptList = getSubDeptList(deptId, accessToken);
         System.out.println("subDeptList:" + subDeptList + "\n");
 
@@ -111,11 +111,9 @@ public class DingDataAnalysis {
             for (int i = 0; i < subDeptList.size(); i++) {
                 String deptId0 = String.valueOf(subDeptList.get(i));
                 System.out.println("depId0: " + i + ":" + deptId0 + "\n");
-
                 // 获取部门详情
                 DingDept dingDept = getDeptDetail(deptId0, accessToken);
                 dingDeptService.insetDingDept(dingDept);
-
                 // 获取下一层子部门
                 JSONArray subDeptList0 = getAllDeptDetail(deptId0, accessToken);
                 if (subDeptList0 != null && subDeptList0.size() > 0) {
@@ -127,7 +125,6 @@ public class DingDataAnalysis {
             }
         } else {
             // 无子部门，获取部门详情
-            // 获取部门详情
             DingDept dingDept = getDeptDetail(deptId, accessToken);
             dingDeptService.insetDingDept(dingDept);
             return null;
@@ -144,6 +141,7 @@ public class DingDataAnalysis {
      */
     public DingUser getUserDetail(String userId, String accessToken) {
         try {
+            // 根据用户id获取用户信息
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/get");
             OapiV2UserGetRequest req = new OapiV2UserGetRequest();
             req.setUserid(userId);
@@ -158,27 +156,31 @@ public class DingDataAnalysis {
                 dingUser.setUserId(result.getUserid());
                 dingUser.setName(result.getName());
                 dingUser.setUnionid(result.getUnionid());
+                // 职位
                 dingUser.setPosition(result.getTitle());
                 dingUser.setTelephone(result.getTelephone());
                 dingUser.setMobile(result.getMobile());
                 dingUser.setEmail(result.getEmail());
-                //所在部门
+                // 所在部门
                 List<Long> deptIdList = result.getDeptIdList();
                 switch (deptIdList.size()) {
                     case 1:
+                        // 部门1
                         dingUser.setDept1(String.valueOf(deptIdList.get(0)));
                         break;
                     case 2:
+                        // 部门2
                         dingUser.setDept1(String.valueOf(deptIdList.get(0)));
                         dingUser.setDept2(String.valueOf(deptIdList.get(1)));
                         break;
                     default:
                         break;
                 }
-
+                // 工号
                 dingUser.setWorkNo(result.getJobNumber());
                 // 入职时间
                 dingUser.setStartWorkDate(String.valueOf(result.getHiredDate()));
+                // 工作地点
                 dingUser.setWorkPlace(result.getWorkPlace());
                 // 身份
                 List<OapiV2UserGetResponse.UserRole> rolesList = result.getRoleList() != null ? result.getRoleList() : null;
@@ -199,8 +201,7 @@ public class DingDataAnalysis {
             } else {
                 return null;
             }
-        } catch (
-                ApiException e) {
+        } catch (ApiException e) {
             e.printStackTrace();
             return null;
         }
@@ -216,6 +217,7 @@ public class DingDataAnalysis {
      */
     public DingDept getDeptDetail(String depId, String accessToken) {
         try {
+            // 根据部门id获取部门信息
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/get");
             OapiV2DepartmentGetRequest req = new OapiV2DepartmentGetRequest();
             req.setDeptId(Long.valueOf(depId));
@@ -225,13 +227,13 @@ public class DingDataAnalysis {
 
             long errCode = rsp.getErrcode();
             OapiV2DepartmentGetResponse.DeptGetResponse result = rsp.getResult();
-            System.out.println("result---" + result.toString());
-
             if (errCode == 0) {
                 DingDept dingDept = new DingDept();
                 dingDept.setDeptId(depId);
                 dingDept.setDeptName(result.getName());
+                // 父部门id
                 dingDept.setParentId(String.valueOf(result.getParentId()));
+                // 管理员id
                 if (result.getDeptManagerUseridList() != null) {
                     dingDept.setDeptManagerId(result.getDeptManagerUseridList().toString());
                 }
@@ -254,18 +256,16 @@ public class DingDataAnalysis {
      */
     public List<Long> getSubDeptList(String deptId, String accessToken) {
         try {
+            // 根据部门id获取部门子部门id
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/listsubid");
             OapiV2DepartmentListsubidRequest req = new OapiV2DepartmentListsubidRequest();
 
             req.setDeptId(Long.valueOf(deptId));
             // 1 根目录
-
             OapiV2DepartmentListsubidResponse rsp = client.execute(req, accessToken);
-
             OapiV2DepartmentListsubidResponse.DeptListSubIdResponse result = rsp.getResult();
-
+            // 子部门id列表
             List<Long> list = result.getDeptIdList();
-            //System.out.println("list---" + list);
             return list;
         } catch (ApiException e) {
             e.printStackTrace();
@@ -306,13 +306,14 @@ public class DingDataAnalysis {
      */
     public List<String> getDeptUserList(String deptId, String accessToken) {
         try {
+            // 获取该部门下所有用户id列表
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/user/listid");
             OapiUserListidRequest req = new OapiUserListidRequest();
             req.setDeptId(Long.valueOf(deptId));
             OapiUserListidResponse rsp = client.execute(req, accessToken);
 
             OapiUserListidResponse.ListUserByDeptResponse result = rsp.getResult();
-
+            // 用户id列表
             List<String> list = result.getUseridList();
             return list;
         } catch (ApiException e) {
@@ -335,8 +336,9 @@ public class DingDataAnalysis {
             dingProcessService = SpringContextUtils.getBean(DingProcessService.class);
         }
 
+        // 开票申请结束时间
         long endTime = System.currentTimeMillis();
-        //开票申请开始时间
+        // 开票申请开始时间
         long startTime = endTime - 24 * 60 * 60 * 1000;
         if (null != params) {
             if (params.containsKey("startTime")) {
@@ -348,7 +350,7 @@ public class DingDataAnalysis {
         }
         log.info("startTime-----" + DateUtil.milliSecond2Date(String.valueOf(startTime), "yyyy-MM-dd HH:mm:ss"));
         log.info("endTime-----" + DateUtil.milliSecond2Date(String.valueOf(endTime), "yyyy-MM-dd HH:mm:ss"));
-
+        // 查询所有用户id
         List<DingUser> list = dingUserService.selectAllUserId();
         for (DingUser user : list) {
             String userId = null;
@@ -360,6 +362,7 @@ public class DingDataAnalysis {
             }
             if (userId != null) {
                 log.info("userId-----" + userId);
+                // 获取开票申请审批id列表
                 List<String> processIdList = getProcessListId(startTime, endTime, userId, accessToken);
                 log.info("processIdList=" + processIdList.toString());
                 if (processIdList != null && processIdList.size() > 0) {
@@ -389,7 +392,7 @@ public class DingDataAnalysis {
      */
     public List<String> getProcessListId(long startTime, long endTime, String userId, String accessToken) {
         try {
-            List<String> id_list = new ArrayList<>();
+            // 根据用户ID，获取开票审批数据
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/listids");
             OapiProcessinstanceListidsRequest req = new OapiProcessinstanceListidsRequest();
             req.setProcessCode(DingUtils.PROCESS_CODE);
@@ -399,6 +402,7 @@ public class DingDataAnalysis {
             req.setCursor(0L);
             req.setUseridList(userId);
             OapiProcessinstanceListidsResponse rsp = client.execute(req, accessToken);
+            List<String> id_list = new ArrayList<>();
             if (rsp != null) {
                 long errCode = rsp.getErrcode();
                 if (errCode == 0) {
@@ -427,6 +431,7 @@ public class DingDataAnalysis {
      */
     public DingProcess getProcessInstance(String processId, String accessToken) {
         try {
+            // 根据实例ID获取审批数据
             DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/get");
             OapiProcessinstanceGetRequest req = new OapiProcessinstanceGetRequest();
             req.setProcessInstanceId(processId);
@@ -436,6 +441,7 @@ public class DingDataAnalysis {
 
             DingProcess dingProcess;
             if (errCode == 0) {
+                // 开票申请审批数据解析
                 dingProcess = AnalysisProcessInstance(processId, rsp);
                 return dingProcess;
             } else {
@@ -457,29 +463,29 @@ public class DingDataAnalysis {
     public DingProcess AnalysisProcessInstance(String processId, OapiProcessinstanceGetResponse response) {
 
         ProcessInstanceTopVo vo = response.getProcessInstance();
-        //实例详情
+        // 实例详情
         log.info("getBody-----" + response.getBody() + "\n");
 
         log.info("getTitle审批实例标题-----" + vo.getTitle());
-        //审批实例标题
+        // 审批实例标题
         log.info("getCreateTime开始时间-----" + vo.getCreateTime());
-        //开始时间
+        // 开始时间
         log.info("getFinishTime结束时间-----" + vo.getFinishTime());
-        //结束时间
+        // 结束时间
         log.info("getOriginatorUserid发起人-----" + vo.getOriginatorUserid());
-        //发起人
+        // 发起人
         log.info("getOriginatorDeptId发起部门-----" + vo.getOriginatorDeptId());
-        //发起部门
+        // 发起部门
         log.info("getStatus审批状态-----" + vo.getStatus());
-        //审批状态，分为NEW（新创建）RUNNING（运行中）TERMINATED（被终止）COMPLETED（完成）
+        // 审批状态，分为NEW（新创建）RUNNING（运行中）TERMINATED（被终止）COMPLETED（完成）
         log.info("getCcUserids抄送人-----" + vo.getCcUserids());
-        //抄送人
+        // 抄送人
         log.info("getResult结果-----" + vo.getResult());
-        //结果，分为NONE（无），AGREE（同意），REFUSE（拒绝），REDIRECTED（转交）
+        // 结果，分为NONE（无），AGREE（同意），REFUSE（拒绝），REDIRECTED（转交）
         log.info("getBusinessId审批实例业务编号-----" + vo.getBusinessId());
-        //审批实例业务编号
+        // 审批实例业务编号
         log.info("getOriginatorDeptName发起部门-----" + vo.getOriginatorDeptName());
-        //发起部门
+        // 发起部门
         List<OapiProcessinstanceGetResponse.FormComponentValueVo> formList = vo.getFormComponentValues();
         DingProcess dingProcess = analysisProcessFormValues(formList);
 
