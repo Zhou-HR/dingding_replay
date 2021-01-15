@@ -2,7 +2,10 @@ package com.gdiot.mapper;
 
 import com.gdiot.entity.ProjectNotify;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author ZhouHR
@@ -11,11 +14,25 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface ProjectNotifyMapper {
-    int deleteByPrimaryKey(Integer id);
+    /**
+     * 增加
+     *
+     * @param projectNotify
+     */
+    void insert(ProjectNotify projectNotify);
 
-    int insert(ProjectNotify record);
+    /**
+     * 查询
+     *
+     * @param userId
+     * @return
+     */
+    List<ProjectNotify> selectOne(@Param("userId") String userId);
 
-    ProjectNotify selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKey(ProjectNotify record);
+    /**
+     * 修改
+     *
+     * @param projectNotify
+     */
+    void update(ProjectNotify projectNotify);
 }

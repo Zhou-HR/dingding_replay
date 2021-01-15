@@ -6,7 +6,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * ding_user
+ * 钉钉用户类
  *
  * @author ZhouHR
  * @date 2021/01/12

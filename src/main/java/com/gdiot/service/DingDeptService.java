@@ -12,5 +12,5 @@ public interface DingDeptService {
      *
      * @param dingDept
      */
-    void insetDingDept(DingDept dingDept);
+    void insertDingDept(DingDept dingDept);
 }

@@ -18,7 +18,7 @@ public class DingDeptServiceImpl implements DingDeptService {
     private DingDeptMapper dingDeptMapper;
 
     @Override
-    public void insetDingDept(DingDept dingDept) {
+    public void insertDingDept(DingDept dingDept) {
         String depId = dingDept.getDeptId();
         // 查询是否有，有的话替换，无的话插入
         List<DingDept> list = dingDeptMapper.selectOne(depId);

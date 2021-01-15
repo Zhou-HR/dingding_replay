@@ -64,7 +64,7 @@
         order by t.update_time desc
     </select>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingProcess">
+    <insert id="insert" parameterType="com.gdiot.entity.DingProcess">
         insert into ding_process (
         <include refid="Base_Column_List"/>
         )values (
@@ -76,7 +76,8 @@
         #{taxpayerNumber,jdbcType=VARCHAR}, #{addressAndTelephone,jdbcType=VARCHAR},#{bankAndAccount,jdbcType=VARCHAR},
         #{invoiceContent,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=VARCHAR},#{taxRate,jdbcType=VARCHAR},
         #{invoiceExplain,jdbcType=VARCHAR}, #{invoiceStartTime,jdbcType=VARCHAR},#{invoiceFinishTime,jdbcType=VARCHAR},
-        #{amountReceived,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP})
+        #{amountReceived,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP}
+        )
     </insert>
 
     <update id="update" parameterType="com.gdiot.entity.DingProcess">

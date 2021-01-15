@@ -41,7 +41,7 @@
         select user_id from ding_user
     </select>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingUser">
+    <insert id="insert" parameterType="com.gdiot.entity.DingUser">
         insert into ding_user (
         <include refid="Base_Column_List"/>
         )values (

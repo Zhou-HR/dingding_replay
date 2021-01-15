@@ -9,6 +9,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 /**
+ * 发送通知工具类
+ *
  * @author ZhouHR
  * @date 2021/01/12
  */
@@ -22,7 +24,6 @@ public class NotifySendUtil {
      * String place = "上海市静安区成都北路333号招商局广场东楼25层";
      * SendNotify( type, mobile, date, place);
      */
-
     public static JSONObject SendNotify(String type, String mobile, String date, String place, int power_status) {
         String host = AlyNotifyConfig.host_sms;
         String path = AlyNotifyConfig.path_sms;

@@ -26,12 +26,13 @@
         order by id desc
     </select>
 
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.gdiot.entity.DingDept">
+    <insert id="insert" parameterType="com.gdiot.entity.DingDept">
         insert into ding_dept (
         <include refid="Base_Column_List"/>
         )values (
         default ,#{deptId,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
-        #{deptManagerId,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP})
+        #{deptManagerId,jdbcType=VARCHAR}, default, #{updateTime,jdbcType=TIMESTAMP}
+        )
     </insert>
 
     <update id="update" parameterType="com.gdiot.entity.DingDept">

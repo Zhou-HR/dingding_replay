@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/1/15
  */
 @RestController
-@RequestMapping("/dd")
-public class DingDingController {
+@RequestMapping("/notify")
+public class DingNotifyController {
 
 }

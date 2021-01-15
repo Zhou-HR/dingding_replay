@@ -7,7 +7,6 @@ import com.gdiot.service.AsyncService;
 import com.gdiot.service.DingProcessService;
 import com.gdiot.task.DataSenderTask;
 import com.gdiot.util.SpringContextUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

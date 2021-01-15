@@ -77,9 +77,7 @@ public class DateUtil2 {
      * @return
      */
     public static String getHour(Date date) {
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
-
         return sdf.format(date);
     }
 

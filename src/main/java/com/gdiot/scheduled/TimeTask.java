@@ -75,11 +75,13 @@ public class TimeTask {
 
     @Scheduled(cron = "0 0 0/1 * * ?")//每个整点执行一次：
     public void testTask() {
+
         log.info("定时任务每小时执行一次");
     }
 
     // @Scheduled(cron = "30 0/10 * * * ?") //10分钟一次
     public void testTask10() {
+
         log.info("定时任务每10分钟执行一次");
     }
 }

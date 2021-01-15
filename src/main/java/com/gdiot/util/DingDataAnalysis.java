@@ -113,7 +113,7 @@ public class DingDataAnalysis {
                 System.out.println("depId0: " + i + ":" + deptId0 + "\n");
                 // 获取部门详情
                 DingDept dingDept = getDeptDetail(deptId0, accessToken);
-                dingDeptService.insetDingDept(dingDept);
+                dingDeptService.insertDingDept(dingDept);
                 // 获取下一层子部门
                 JSONArray subDeptList0 = getAllDeptDetail(deptId0, accessToken);
                 if (subDeptList0 != null && subDeptList0.size() > 0) {
@@ -126,7 +126,7 @@ public class DingDataAnalysis {
         } else {
             // 无子部门，获取部门详情
             DingDept dingDept = getDeptDetail(deptId, accessToken);
-            dingDeptService.insetDingDept(dingDept);
+            dingDeptService.insertDingDept(dingDept);
             return null;
         }
         return jsonarr;
