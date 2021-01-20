@@ -2,6 +2,9 @@ package com.gdiot.util;
 
 /**
  * 钉钉应用的常量类
+ *
+ * @author ZhouHR
+ * @date 2021/01/20 19:00
  */
 public class DingDingConstants {
     /**

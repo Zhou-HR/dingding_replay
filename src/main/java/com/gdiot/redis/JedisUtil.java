@@ -18,12 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Slf4j
 @Component
 public class JedisUtil {
-
 
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -40,7 +39,6 @@ public class JedisUtil {
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         this.redisTemplate = redisTemplate;
     }
-
 
     public JedisUtil() {
         log.info("============JedisUtil===============");

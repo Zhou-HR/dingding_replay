@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Configuration
 @PropertySource("classpath:redis.properties")
@@ -27,25 +27,32 @@ public class RedisConfig {
     private Logger LOGGER = LoggerFactory.getLogger(RedisConfig.class);
 
     @Value("${spring.redis.host}")
-    private String host;//= PropertiesUtil.getValue("spring.redis.host");
+    private String host;
+    // = PropertiesUtil.getValue("spring.redis.host");
 
     @Value("${spring.redis.port}")
-    private int port;//= Integer.parseInt(PropertiesUtil.getValue("spring.redis.port"));
+    private int port;
+    // = Integer.parseInt(PropertiesUtil.getValue("spring.redis.port"));
 
     @Value("${spring.redis.timeout}")
-    private int timeout;//= Integer.parseInt(PropertiesUtil.getValue("spring.redis.timeout"));
+    private int timeout;
+    // = Integer.parseInt(PropertiesUtil.getValue("spring.redis.timeout"));
 
     @Value("${spring.redis.jedis.pool.max-idle}")
-    private int maxIdle;//= Integer.parseInt(PropertiesUtil.getValue("spring.redis.jedis.pool.max-idle"));
+    private int maxIdle;
+    // = Integer.parseInt(PropertiesUtil.getValue("spring.redis.jedis.pool.max-idle"));
 
     @Value("${spring.redis.jedis.pool.max-wait}")
-    private long maxWaitMillis;//= Long.parseLong(PropertiesUtil.getValue("spring.redis.jedis.pool.max-wait"));
+    private long maxWaitMillis;
+    // = Long.parseLong(PropertiesUtil.getValue("spring.redis.jedis.pool.max-wait"));
 
     @Value("${spring.redis.password}")
-    private String password;//= PropertiesUtil.getValue("spring.redis.password");
+    private String password;
+    // = PropertiesUtil.getValue("spring.redis.password");
 
     @Value("${spring.redis.block-when-exhausted}")
-    private boolean blockWhenExhausted;//= "true".equals(PropertiesUtil.getValue("spring.redis.block-when-exhausted")) ? true:false;
+    private boolean blockWhenExhausted;
+    // = "true".equals(PropertiesUtil.getValue("spring.redis.block-when-exhausted")) ? true:false;
 
     @Bean(name = "redisPoolFactory")
     public JedisPool redisPoolFactory() throws Exception {
@@ -73,14 +80,13 @@ public class RedisConfig {
         return new KeyGenerator() {
             @Override
             public Object generate(Object target, Method method, Object... params) {
-                if (params != null && params.length > 1
-                        && params[0] instanceof RequestFacade
-                        && params[1] instanceof Serializable) {
+                if (params != null && params.length > 1 && params[0] instanceof RequestFacade
+                    && params[1] instanceof Serializable) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(target.getClass().getName());
                     sb.append("." + method.getName());
                     sb.append("{");
-                    sb.append((String) (((RequestFacade) params[0]).getAttribute("tokenuser")));
+                    sb.append((String)(((RequestFacade)params[0]).getAttribute("tokenuser")));
                     sb.append("}");
                     sb.append("&");
                     sb.append(params[1].getClass().getName());
@@ -95,14 +101,14 @@ public class RedisConfig {
                     if (params == null || params.length == 0 || params[0] == null) {
                         return null;
                     }
-                    String join = String.join("&", Arrays.stream(params).map(Object::toString).collect(Collectors.toList()));
+                    String join =
+                        String.join("&", Arrays.stream(params).map(Object::toString).collect(Collectors.toList()));
                     String format = String.format("%s{%s}", sb.toString(), join);
-                    //log.info("缓存key：" + format);
+                    // log.info("缓存key：" + format);
                     return format;
                 }
             }
         };
     }
-
 
 }

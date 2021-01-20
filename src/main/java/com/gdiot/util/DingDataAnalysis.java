@@ -25,7 +25,7 @@ import java.util.Map;
  * 对接钉钉的工具类
  *
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Slf4j
 public class DingDataAnalysis {
@@ -37,7 +37,9 @@ public class DingDataAnalysis {
     /**
      * 获取Token
      *
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public String getToken() {
         try {
@@ -59,7 +61,9 @@ public class DingDataAnalysis {
      *
      * @param deptId
      * @param accessToken
-     * @return
+     * @return com.alibaba.fastjson.JSONArray
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public JSONArray getAllDeptUserDetail(String deptId, String accessToken) {
         System.out.println("deptId:" + deptId + "\n");
@@ -96,7 +100,9 @@ public class DingDataAnalysis {
      *
      * @param deptId
      * @param accessToken
-     * @return
+     * @return com.alibaba.fastjson.JSONArray
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public JSONArray getAllDeptDetail(String deptId, String accessToken) {
         System.out.println("deptId:" + deptId + "\n");
@@ -137,7 +143,9 @@ public class DingDataAnalysis {
      *
      * @param userId
      * @param accessToken
-     * @return
+     * @return com.gdiot.entity.DingUser
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public DingUser getUserDetail(String userId, String accessToken) {
         try {
@@ -213,7 +221,9 @@ public class DingDataAnalysis {
      *
      * @param depId
      * @param accessToken
-     * @return
+     * @return com.gdiot.entity.DingDept
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public DingDept getDeptDetail(String depId, String accessToken) {
         try {
@@ -252,7 +262,9 @@ public class DingDataAnalysis {
      *
      * @param deptId
      * @param accessToken
-     * @return
+     * @return java.util.List<java.lang.Long>
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public List<Long> getSubDeptList(String deptId, String accessToken) {
         try {
@@ -277,6 +289,10 @@ public class DingDataAnalysis {
      * 获取部门下的所有用户详情
      *
      * @param deptId
+     * @param accessToken
+     * @return void
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public void getDeptUserDetailSave(String deptId, String accessToken) {
         if (dingUserService == null) {
@@ -302,7 +318,9 @@ public class DingDataAnalysis {
      *
      * @param deptId
      * @param accessToken
-     * @return
+     * @return java.util.List<java.lang.String>
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public List<String> getDeptUserList(String deptId, String accessToken) {
         try {
@@ -327,6 +345,9 @@ public class DingDataAnalysis {
      *
      * @param accessToken
      * @param params
+     * @return void
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public void getAllProcessDetail(String accessToken, Map<String, Object> params) {
         if (dingUserService == null) {
@@ -388,7 +409,9 @@ public class DingDataAnalysis {
      * @param endTime
      * @param userId
      * @param accessToken
-     * @return
+     * @return java.util.List<java.lang.String>
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public List<String> getProcessListId(long startTime, long endTime, String userId, String accessToken) {
         try {
@@ -427,7 +450,9 @@ public class DingDataAnalysis {
      *
      * @param processId
      * @param accessToken
-     * @return
+     * @return com.gdiot.entity.DingProcess
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public DingProcess getProcessInstance(String processId, String accessToken) {
         try {
@@ -458,7 +483,9 @@ public class DingDataAnalysis {
      *
      * @param processId
      * @param response
-     * @return
+     * @return com.gdiot.entity.DingProcess
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public DingProcess AnalysisProcessInstance(String processId, OapiProcessinstanceGetResponse response) {
 
@@ -508,7 +535,9 @@ public class DingDataAnalysis {
      * 解析开票数据表单
      *
      * @param list
-     * @return
+     * @return com.gdiot.entity.DingProcess
+     * @author ZhouHR
+     * @date 2021/01/20 19:47
      */
     public DingProcess analysisProcessFormValues(List<OapiProcessinstanceGetResponse.FormComponentValueVo> list) {
         System.out.println("-------------------------------analysis Process FormValues----------------------------------- " + "\n");

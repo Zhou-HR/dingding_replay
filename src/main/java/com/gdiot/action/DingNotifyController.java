@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author ZhouHR
- * @date 2021/1/15
+ * @date 2021/01/20 19:00
  */
 @RestController
 @RequestMapping("/notify")

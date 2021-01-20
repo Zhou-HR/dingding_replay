@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class StringSerializer implements Serializer {
 
@@ -13,7 +13,7 @@ public class StringSerializer implements Serializer {
     @Override
     public byte[] serialize(Object s) {
 
-        return (s == null || !(s instanceof String) ? null : ((String) s).getBytes(charset));
+        return (s == null || !(s instanceof String) ? null : ((String)s).getBytes(charset));
     }
 
     @Override

@@ -9,38 +9,48 @@ import java.util.List;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Mapper
 @Component
 public interface DingUserMapper {
 
     /**
-     * 查询用户
-     *
+     * 查询
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:25
      * @param userId
-     * @return
+     * @return java.util.List<com.gdiot.entity.DingUser>
      */
     List<DingUser> selectOne(@Param("userId") String userId);
 
     /**
-     * 更新用户信息
-     *
+     * 更新
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:25
      * @param dingUser
+     * @return void
      */
     void update(DingUser dingUser);
 
     /**
      * 增加
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:26
      * @param dingUser
+     * @return void
      */
     void insert(DingUser dingUser);
 
     /**
-     * 查询所有用户id
-     *
-     * @return
+     * 查询所有
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:26
+     * @return java.util.List<com.gdiot.entity.DingUser>
      */
     List<DingUser> selectAllUserId();
 }

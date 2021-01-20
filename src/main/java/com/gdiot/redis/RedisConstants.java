@@ -2,20 +2,19 @@ package com.gdiot.redis;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class RedisConstants {
 
     public static final String spilt = ":";
 
     /**
-     * redis库1  保存档案树
+     * redis库1 保存档案树
      */
     public static final Integer datebase1 = 1;
 
     /**
-     * 1.redis库2 保存档案表格
-     * 2.保存分页码
+     * 1.redis库2 保存档案表格 2.保存分页码
      */
     public static final Integer datebase2 = 2;
 
@@ -48,7 +47,6 @@ public class RedisConstants {
      * redis库8 记录任务参数
      */
     public static final Integer datebase8 = 8;
-
 
     public RedisConstants() {
 

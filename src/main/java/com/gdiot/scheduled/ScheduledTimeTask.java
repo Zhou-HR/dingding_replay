@@ -9,26 +9,25 @@ import org.springframework.boot.ApplicationRunner;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
-//@Component
+// @Component
 @Slf4j
-public class ScheduledTimeTask  implements ApplicationRunner{
+public class ScheduledTimeTask implements ApplicationRunner {
 
-	@Autowired
-	private AsyncService asyncService;
-	
-	@Override
-	public void run(ApplicationArguments args) {
-		// 1，查出所有电表表号
-		// 2，循环，进入线程池。
-		// 3,根据表号，当前日期，查前24小时内最早的一条记录和最晚的一条记录，两者相减，得出一天的用电量,保存
-		// 注：此处使用注解@Component，开机会执行一次，去掉注解将不执行
-		String depId = "1";
-		DataSenderTask task = new DataSenderTask(depId,"all_dep_user_detail");
-		task.setAsyncService(asyncService);
-		asyncService.executeAsync(task);
-	}
-	
+    @Autowired
+    private AsyncService asyncService;
+
+    @Override
+    public void run(ApplicationArguments args) {
+        // 1，查出所有电表表号
+        // 2，循环，进入线程池。
+        // 3,根据表号，当前日期，查前24小时内最早的一条记录和最晚的一条记录，两者相减，得出一天的用电量,保存
+        // 注：此处使用注解@Component，开机会执行一次，去掉注解将不执行
+        String depId = "1";
+        DataSenderTask task = new DataSenderTask(depId, "all_dep_user_detail");
+        task.setAsyncService(asyncService);
+        asyncService.executeAsync(task);
+    }
 
 }

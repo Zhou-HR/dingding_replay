@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * @author ZhouHR
- * @date 2021/1/14
+ * @date 2021/01/20 19:00
  */
 @RestController
 @RequestMapping("/process")
@@ -31,8 +31,11 @@ public class DingProcessController {
 
     /**
      * 获取开票申请列表
-     *
-     * @return
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:23
+     * @param params
+     * @return java.lang.String
      */
     @RequestMapping("/getAllProcessDetail")
     public String getAllProcessDetail(@RequestBody Map<String, String> params) throws IOException {
@@ -72,7 +75,7 @@ public class DingProcessController {
         // 从数据库获取开票申请列表
         dingProcessList = dingProcessService.selectDingProcessAgree(startTime, endTime);
         // List转成json字符串
-        String jsonOutput = JSON.toJSONString(dingProcessList, (ValueFilter) (object, ame, value) -> {
+        String jsonOutput = JSON.toJSONString(dingProcessList, (ValueFilter)(object, ame, value) -> {
             // null值转成""
             if (value == null) {
                 return "";

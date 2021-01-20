@@ -11,7 +11,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class VisiableThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     private static final Logger logger = LoggerFactory.getLogger(VisiableThreadPoolTaskExecutor.class);

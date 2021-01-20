@@ -7,14 +7,16 @@ import java.util.Date;
  * 时间转换工具类
  *
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class DateUtil {
     /**
      * 判定当前时间是否空闲，能否发下行指令
      *
      * @param time
-     * @return
+     * @return boolean
+     * @author ZhouHR
+     * @date 2021/01/20 19:44
      */
     public static boolean ifCurrentTimeFree(long time) {
         boolean isFree = true;
@@ -31,9 +33,12 @@ public class DateUtil {
     /**
      * 时间戳转换成日期格式字符串
      *
-     * @param seconds 精确到秒的字符串
+     * @param seconds
+     *            精确到秒的字符串
      * @param format
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:44
      */
     public static String timeStamp2Date(String seconds, String format) {
         if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
@@ -49,9 +54,12 @@ public class DateUtil {
     /**
      * 时间戳转换成日期格式字符串
      *
-     * @param seconds 精确到毫秒的字符串
+     * @param seconds
+     *            精确到秒的字符串
      * @param format
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:44
      */
     public static String milliSecond2Date(String seconds, String format) {
         if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
@@ -67,9 +75,13 @@ public class DateUtil {
     /**
      * 日期格式字符串转换成时间戳字符串
      *
-     * @param date   字符串日期
-     * @param format 如：yyyy-MM-dd HH:mm:ss
-     * @return
+     * @param date
+     *            字符串日期
+     * @param format
+     *            如：yyyy-MM-dd HH:mm:ss
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:45
      */
     public static String date2TimeStamp(String date, String format) {
         try {
@@ -84,9 +96,13 @@ public class DateUtil {
     /**
      * 日期格式字符串转换成时间戳
      *
-     * @param date   字符串日期
-     * @param format 如：yyyy-MM-dd HH:mm:ss
-     * @return
+     * @param date
+     *            字符串日期
+     * @param format
+     *            如：yyyy-MM-dd HH:mm:ss
+     * @return long
+     * @author ZhouHR
+     * @date 2021/01/20 19:45
      */
     public static long date2TimeStampLong(String date, String format) {
         try {
@@ -100,8 +116,10 @@ public class DateUtil {
 
     /**
      * 取得当前时间戳（精确到秒）
-     *
-     * @return
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
+     * @return java.lang.String
      */
     public static String timeStamp() {
         long time = System.currentTimeMillis();

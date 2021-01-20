@@ -32,25 +32,24 @@ import java.util.Map;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class HttpUtils {
 
     /**
      * get
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:30
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doGet(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys)
-            throws Exception {
+    public static HttpResponse doGet(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpGet request = new HttpGet(buildUrl(host, path, querys));
@@ -63,21 +62,19 @@ public class HttpUtils {
 
     /**
      * post form
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:30
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
      * @param bodys
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      Map<String, String> bodys)
-            throws Exception {
+    public static HttpResponse doPost(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys, Map<String, String> bodys) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPost request = new HttpPost(buildUrl(host, path, querys));
@@ -99,11 +96,19 @@ public class HttpUtils {
         return httpClient.execute(request);
     }
 
-    //
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      String bodys)
-            throws Exception {
+    /**
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:31
+     * @param host
+     * @param path
+     * @param method
+     * @param headers
+     * @param bodys
+     * @return org.apache.http.HttpResponse
+     */
+    public static HttpResponse doPost(String host, String path, String method, Map<String, String> headers,
+        String bodys) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPost request = new HttpPost(buildUrl(host, path, null));
@@ -121,7 +126,7 @@ public class HttpUtils {
 
     /**
      * Post String
-     *
+     * 
      * @param host
      * @param path
      * @param method
@@ -131,11 +136,8 @@ public class HttpUtils {
      * @return
      * @throws Exception
      */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      String body)
-            throws Exception {
+    public static HttpResponse doPost(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys, String body) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPost request = new HttpPost(buildUrl(host, path, querys));
@@ -152,21 +154,19 @@ public class HttpUtils {
 
     /**
      * Post stream
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:31
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
      * @param body
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doPost(String host, String path, String method,
-                                      Map<String, String> headers,
-                                      Map<String, String> querys,
-                                      byte[] body)
-            throws Exception {
+    public static HttpResponse doPost(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys, byte[] body) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPost request = new HttpPost(buildUrl(host, path, querys));
@@ -183,21 +183,19 @@ public class HttpUtils {
 
     /**
      * Put String
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:31
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
      * @param body
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doPut(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys,
-                                     String body)
-            throws Exception {
+    public static HttpResponse doPut(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys, String body) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPut request = new HttpPut(buildUrl(host, path, querys));
@@ -214,21 +212,19 @@ public class HttpUtils {
 
     /**
      * Put stream
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:32
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
      * @param body
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doPut(String host, String path, String method,
-                                     Map<String, String> headers,
-                                     Map<String, String> querys,
-                                     byte[] body)
-            throws Exception {
+    public static HttpResponse doPut(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys, byte[] body) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpPut request = new HttpPut(buildUrl(host, path, querys));
@@ -245,19 +241,18 @@ public class HttpUtils {
 
     /**
      * Delete
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:32
      * @param host
      * @param path
      * @param method
      * @param headers
      * @param querys
-     * @return
-     * @throws Exception
+     * @return org.apache.http.HttpResponse
      */
-    public static HttpResponse doDelete(String host, String path, String method,
-                                        Map<String, String> headers,
-                                        Map<String, String> querys)
-            throws Exception {
+    public static HttpResponse doDelete(String host, String path, String method, Map<String, String> headers,
+        Map<String, String> querys) throws Exception {
         HttpClient httpClient = wrapClient(host);
 
         HttpDelete request = new HttpDelete(buildUrl(host, path, querys));
@@ -268,7 +263,8 @@ public class HttpUtils {
         return httpClient.execute(request);
     }
 
-    private static String buildUrl(String host, String path, Map<String, String> querys) throws UnsupportedEncodingException {
+    private static String buildUrl(String host, String path, Map<String, String> querys)
+        throws UnsupportedEncodingException {
         StringBuilder sbUrl = new StringBuilder();
         sbUrl.append(host);
         if (!StringUtils.isBlank(path)) {
@@ -327,7 +323,7 @@ public class HttpUtils {
 
                 }
             };
-            ctx.init(null, new TrustManager[]{tm}, null);
+            ctx.init(null, new TrustManager[] {tm}, null);
             SSLSocketFactory ssf = new SSLSocketFactory(ctx);
             ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             ClientConnectionManager ccm = httpClient.getConnectionManager();

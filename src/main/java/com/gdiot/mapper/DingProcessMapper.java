@@ -9,39 +9,49 @@ import java.util.List;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Mapper
 @Component
 public interface DingProcessMapper {
     /**
      * 增加
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:24
      * @param record
+     * @return void
      */
     void insert(DingProcess record);
 
     /**
      * 查询
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:25
      * @param processId
-     * @return
+     * @return java.util.List<com.gdiot.entity.DingProcess>
      */
     List<DingProcess> selectOne(@Param("processId") String processId);
 
-    /***
+    /**
      * 更新
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:25
      * @param dingProcess
+     * @return void
      */
     void update(DingProcess dingProcess);
 
     /**
      * 查询
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:25
      * @param startTime
      * @param endTime
-     * @return
+     * @return java.util.List<com.gdiot.entity.DingProcess>
      */
     List<DingProcess> selectDingProcessAgree(String startTime, String endTime);
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  * 项目人员通知类
  *
  * @author ZhouHR
- * @date 2021/01/14
+ * @date 2021/01/20 19:00
  */
 @Data
 public class ProjectNotify implements Serializable {

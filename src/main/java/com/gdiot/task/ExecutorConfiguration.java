@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Configuration
 @EnableAsync
@@ -26,7 +26,7 @@ public class ExecutorConfiguration {
         executor.setMaxPoolSize(5);
         executor.setQueueCapacity(99999);
         executor.setThreadNamePrefix("async-service-");
-        //当pool已满，不在新线程中执行，而是由调用者所在的线程执行
+        // 当pool已满，不在新线程中执行，而是由调用者所在的线程执行
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
         LOGGER.info("task: asyncServiceExecutor init success");

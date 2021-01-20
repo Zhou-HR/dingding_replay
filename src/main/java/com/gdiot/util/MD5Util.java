@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
  * MD5工具类
  *
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class MD5Util {
     public static String getPwd(String pwd) {

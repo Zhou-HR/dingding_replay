@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class DateUtil2 {
 
@@ -16,7 +16,9 @@ public class DateUtil2 {
      * 警告时间
      *
      * @param time
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public static String dealWarningTime(String time) {
         if (StringUtils.isNotEmpty(time) && time.length() == 12) {
@@ -31,7 +33,9 @@ public class DateUtil2 {
      * 获取前2天的日期，保证当月的
      *
      * @param num
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public static String getSimToday1(int num) {
         Calendar cnow = Calendar.getInstance();
@@ -55,7 +59,9 @@ public class DateUtil2 {
     /**
      * 将当前时间格式化为yyyyMMdd
      *
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public static String getToday() {
         Date date = new Date();
@@ -74,7 +80,9 @@ public class DateUtil2 {
      * 将时间格式化为yyyyMMdd HH
      *
      * @param date
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public static String getHour(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
@@ -104,7 +112,9 @@ public class DateUtil2 {
     /**
      * 获取当前时间
      *
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:46
      */
     public static String getTodayTime() {
         Date date = new Date();

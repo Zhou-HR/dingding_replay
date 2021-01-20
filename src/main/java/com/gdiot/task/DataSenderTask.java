@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 public class DataSenderTask implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSenderTask.class);
@@ -60,8 +60,11 @@ public class DataSenderTask implements Runnable {
 
     /**
      * 通讯录列表解析入库
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:41
      * @param depId
+     * @return void
      */
     private void getAllDeptUserDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
@@ -75,8 +78,11 @@ public class DataSenderTask implements Runnable {
 
     /**
      * 部门列表解析入库
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:41
      * @param depId
+     * @return void
      */
     private void getAllDeptDetail(String depId) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
@@ -90,8 +96,11 @@ public class DataSenderTask implements Runnable {
 
     /**
      * 开票审批列表解析入库
-     *
+     * 
+     * @author ZhouHR
+     * @date 2021/01/20 19:42
      * @param map
+     * @return void
      */
     private void getAllProcessDetail(Map<String, Object> map) {
         DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();

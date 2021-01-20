@@ -11,13 +11,21 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Slf4j
 public class DingDingUtil {
 
     private static final String DINGDING_URL = PropertiesUtil.getValue("dingding_url");
 
+    /**
+     * @param userCode
+     * @param userID
+     * @param msg
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:48
+     */
     public static String send(String userCode, String userID, String msg) {
         msg = DateUtil2.getTodayTime() + " " + msg;
         Map<String, String> param = new HashMap<>();

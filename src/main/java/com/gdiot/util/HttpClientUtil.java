@@ -15,7 +15,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,22 +63,23 @@ import lombok.extern.slf4j.Slf4j;
  * HttpClient工具类
  *
  * @author ZhouHR
- * @date 2021/01/12
+ * @date 2021/01/20 19:00
  */
 @Slf4j
 public class HttpClientUtil {
-    //连接池最大连接数
+    // 连接池最大连接数
     private final static Integer MAX_TOTAL = 500;
-    //路由最大连接数
+    // 路由最大连接数
     private final static Integer MAX_PER_ROUTE = 500;
-    //连接建立后数据传输超时时长
-    private final static Integer socketTimeout = 35000;
+    // 连接建立后数据传输超时时长
+    private final static Integer SOCKET_TIMEOUT = 35000;
     // 建立连接超时时长
-    private final static Integer connectTimeout = 35000;
-    //建立请求超时时长
-    private final static Integer connectionRequestTimeout = 35000;
+    private final static Integer CONNECT_TIMEOUT = 35000;
+    // 建立请求超时时长
+    private final static Integer CONNECTION_REQUEST_TIMEOUT = 35000;
+
     private final static String DEFAULT_CHARSET = "UTF-8";
-    private static PoolingHttpClientConnectionManager connManager = null;
+    private static PoolingHttpClientConnectionManager connManager;
 
     static {
         RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.<ConnectionSocketFactory>create();
@@ -92,7 +92,8 @@ public class HttpClientUtil {
                     return true;
                 }
             }).build();
-            LayeredConnectionSocketFactory sslSf = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            LayeredConnectionSocketFactory sslSf =
+                new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             registryBuilder.register("https", sslSf);
         } catch (KeyStoreException e) {
             log.error(e.getMessage());
@@ -103,11 +104,8 @@ public class HttpClientUtil {
         }
         Registry<ConnectionSocketFactory> registry = registryBuilder.build();
         connManager = new PoolingHttpClientConnectionManager(registry);
-        ConnectionConfig connectionConfig = ConnectionConfig.custom()
-                .setMalformedInputAction(CodingErrorAction.IGNORE)
-                .setUnmappableInputAction(CodingErrorAction.IGNORE)
-                .setCharset(Consts.UTF_8)
-                .build();
+        ConnectionConfig connectionConfig = ConnectionConfig.custom().setMalformedInputAction(CodingErrorAction.IGNORE)
+            .setUnmappableInputAction(CodingErrorAction.IGNORE).setCharset(Consts.UTF_8).build();
         connManager.setDefaultConnectionConfig(connectionConfig);
         connManager.setMaxTotal(MAX_TOTAL);
         connManager.setDefaultMaxPerRoute(MAX_PER_ROUTE);
@@ -116,7 +114,9 @@ public class HttpClientUtil {
     /**
      * 获取HttpClient
      *
-     * @return
+     * @return org.apache.http.impl.client.CloseableHttpClient
+     * @author ZhouHR
+     * @date 2021/01/20 19:48
      */
     private static CloseableHttpClient getCloseableHttpClient() {
         HttpClientContext httpClientContext = HttpClientContext.create();
@@ -125,9 +125,8 @@ public class HttpClientUtil {
 
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
-        return HttpClients.custom().setConnectionManager(connManager)
-                .setDefaultRequestConfig(globalConfig)
-                .setDefaultCookieStore(cookieStore).build();
+        return HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(globalConfig)
+            .setDefaultCookieStore(cookieStore).build();
     }
 
     /**
@@ -135,7 +134,9 @@ public class HttpClientUtil {
      *
      * @param url
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:48
      */
     public static String get(String url, String charset) {
 
@@ -148,16 +149,18 @@ public class HttpClientUtil {
      * @param url
      * @param paramsMap
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     public static String get(String url, Map<String, String> paramsMap, String charset) {
-        //访问地址不能为空
+        // 访问地址不能为空
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-        //将请求参数封装成List<NameValuePair>
+        // 将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-        //参数不为空
+        // 参数不为空
         if (CollectionUtils.isNotEmpty(paramslist)) {
             url = url + "?" + URLEncodedUtils.format(paramslist, getCharset(charset));
         }
@@ -173,7 +176,7 @@ public class HttpClientUtil {
             String json = gson.toJson(paramsMap);
             StringEntity s = new StringEntity(json.toString(), "UTF-8");
             s.setContentEncoding(charset);
-            //发送json数据需要设置contentType
+            // 发送json数据需要设置contentType
             s.setContentType("application/json");
             httpPost.setEntity(s);
         } catch (Exception e) {
@@ -186,19 +189,20 @@ public class HttpClientUtil {
         return resultStr;
     }
 
-    public static String postJsonHeader(String url, Map<String, String> headers, Map<String, Object> paramsMap, String charset) {
+    public static String postJsonHeader(String url, Map<String, String> headers, Map<String, Object> paramsMap,
+        String charset) {
         HttpPost httpPost = new HttpPost(url);
         try {
-            //header
+            // header
             for (Map.Entry<String, String> e : headers.entrySet()) {
                 httpPost.addHeader(e.getKey(), e.getValue());
             }
-            //body
+            // body
             Gson gson = new Gson();
             String json = gson.toJson(paramsMap);
             StringEntity s = new StringEntity(json.toString(), "UTF-8");
             s.setContentEncoding(charset);
-            //发送json数据需要设置contentType
+            // 发送json数据需要设置contentType
             s.setContentType("application/json");
             httpPost.setEntity(s);
         } catch (Exception e) {
@@ -217,19 +221,21 @@ public class HttpClientUtil {
      * @param url
      * @param paramsMap
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     public static String post(String url, Map<String, String> paramsMap, String charset) {
-        //访问地址不能为空
+        // 访问地址不能为空
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-        //将请求参数封装成List<NameValuePair>
+        // 将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-        //httppost请求
+        // httppost请求
         HttpPost httpPost = new HttpPost(url);
         try {
-            //如果参数不为空，则将参数设置到请求体中
+            // 如果参数不为空，则将参数设置到请求体中
             if (CollectionUtils.isNotEmpty(paramslist)) {
                 httpPost.setEntity(new UrlEncodedFormEntity(paramslist, getCharset(charset)));
             }
@@ -242,20 +248,21 @@ public class HttpClientUtil {
         return resultStr;
     }
 
-    public static String postWithHeaders(String url, Map<String, String> headers, Map<String, String> paramsMap, String charset) {
-        //访问地址不能为空
+    public static String postWithHeaders(String url, Map<String, String> headers, Map<String, String> paramsMap,
+        String charset) {
+        // 访问地址不能为空
         if (StringUtils.isEmpty(url)) {
             return null;
         }
-        //将请求参数封装成List<NameValuePair>
+        // 将请求参数封装成List<NameValuePair>
         List<NameValuePair> paramslist = getParamsList(paramsMap);
-        //httppost请求
+        // httppost请求
         HttpPost httpPost = new HttpPost(url);
         try {
             for (Map.Entry<String, String> e : headers.entrySet()) {
                 httpPost.addHeader(e.getKey(), e.getValue());
             }
-            //如果参数不为空，则将参数设置到请求体中
+            // 如果参数不为空，则将参数设置到请求体中
             if (CollectionUtils.isNotEmpty(paramslist)) {
                 httpPost.setEntity(new UrlEncodedFormEntity(paramslist, getCharset(charset)));
             }
@@ -265,7 +272,7 @@ public class HttpClientUtil {
         }
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramslist.toString());
         String resultStr = excute(httpPost, charset);
-//		log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramslist.toString(),resultStr);
+        // log.info("结束调用接口,接口地址[{}],参数[{}],返回结果[{}]",url,paramslist.toString(),resultStr);
         return resultStr;
     }
 
@@ -275,10 +282,12 @@ public class HttpClientUtil {
      * @param url
      * @param paramStr
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     public static String post(String url, String paramStr, String charset) {
-        //访问地址不能为空
+        // 访问地址不能为空
         if (StringUtils.isEmpty(url)) {
             return null;
         }
@@ -293,11 +302,12 @@ public class HttpClientUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //httppost请求
+        // httppost请求
         HttpPost httpPost = new HttpPost(uri);
 
         if (StringUtils.isNotEmpty(paramStr)) {
-            httpPost.setEntity(new StringEntity(paramStr, ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), Charset.forName(getCharset(charset)))));
+            httpPost.setEntity(new StringEntity(paramStr,
+                ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), Charset.forName(getCharset(charset)))));
         }
 
         log.info("开始调用接口,接口地址[{}],参数[{}]", url, paramStr);
@@ -310,25 +320,27 @@ public class HttpClientUtil {
      *
      * @param request
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     private static String excute(HttpRequestBase request, String charset) {
-        //请求对象
+        // 请求对象
         CloseableHttpClient httpClient = getCloseableHttpClient();
         request.setConfig(getRequestConfig());
-        //响 应对象
+        // 响 应对象
         CloseableHttpResponse httpResponse = null;
-        //返回结果
+        // 返回结果
         String responseStr = null;
         try {
-            //调用远程接口
+            // 调用远程接口
             httpResponse = httpClient.execute(request);
-            //查看返回的状态码是否调用成功
+            // 查看返回的状态码是否调用成功
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("接口调用失败，状态码：" + httpResponse.getStatusLine().getStatusCode());
                 return null;
             }
-            //获取返回的结果数据(String类型)
+            // 获取返回的结果数据(String类型)
             responseStr = EntityUtils.toString(httpResponse.getEntity(), getCharset(charset));
         } catch (ClientProtocolException e) {
             log.error("客户端连接异常，" + e.getMessage());
@@ -346,6 +358,9 @@ public class HttpClientUtil {
      * 关闭资源
      *
      * @param httpResponse
+     * @return void
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     private static void close(CloseableHttpResponse httpResponse) {
         if (httpResponse != null) {
@@ -360,21 +375,23 @@ public class HttpClientUtil {
     /**
      * 获取请求配置
      *
-     * @return
+     * @return org.apache.http.client.config.RequestConfig
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     private static RequestConfig getRequestConfig() {
-        //请求配置信息
-        return RequestConfig.custom()
-                .setConnectionRequestTimeout(connectionRequestTimeout)
-                .setConnectTimeout(connectTimeout)
-                .setSocketTimeout(socketTimeout).build();
+        // 请求配置信息
+        return RequestConfig.custom().setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
+            .setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
     }
 
     /**
      * 将请求参数封装成List<NameValuePair>
      *
      * @param paramsMap
-     * @return
+     * @return java.util.List<org.apache.http.NameValuePair>
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     private static List<NameValuePair> getParamsList(Map<String, String> paramsMap) {
         List<NameValuePair> paramsList = null;
@@ -391,7 +408,9 @@ public class HttpClientUtil {
      * 获取字符集
      *
      * @param charset
-     * @return
+     * @return java.lang.String
+     * @author ZhouHR
+     * @date 2021/01/20 19:49
      */
     private static String getCharset(String charset) {
         if (StringUtils.isEmpty(charset)) {
