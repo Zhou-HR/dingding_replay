@@ -40,4 +40,11 @@
         update_time = CURRENT_TIMESTAMP
         where user_id = #{userId,jdbcType=VARCHAR}
     </update>
+
+    <update id="updateNotify">
+        update project_notify
+        set notify = #{notify,jdbcType=VARCHAR},
+        update_time = CURRENT_TIMESTAMP
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
 </mapper>

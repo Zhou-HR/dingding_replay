@@ -1,6 +1,7 @@
 package com.gdiot.service;
 
 import com.gdiot.entity.FinanceNotify;
+import com.gdiot.entity.ProjectNotify;
 
 /**
  * @author ZhouHR
@@ -15,5 +16,14 @@ public interface FinanceNotifyService {
      * @param financeNotify
      * @return void
      */
-    void insert(FinanceNotify financeNotify);
+    void insertFinanceNotify(FinanceNotify financeNotify);
+
+   /**更新财务通知人员
+    *
+    * @author ZhouHR
+    * @date 2021/01/22 15:12
+    * @param financeNotify
+    * @return void
+    */
+    void updateNotify(FinanceNotify financeNotify);
 }

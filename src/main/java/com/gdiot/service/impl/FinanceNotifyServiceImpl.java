@@ -18,7 +18,7 @@ public class FinanceNotifyServiceImpl implements FinanceNotifyService {
     private FinanceNotifyMapper financeNotifyMapper;
 
     @Override
-    public void insert(FinanceNotify financeNotify) {
+    public void insertFinanceNotify(FinanceNotify financeNotify) {
         // 查询是否有，有的话替换，无的话插入
         String userId = financeNotify.getUserId();
         List<FinanceNotify> list = financeNotifyMapper.selectOne(userId);
@@ -29,5 +29,10 @@ public class FinanceNotifyServiceImpl implements FinanceNotifyService {
             // 不存在
             financeNotifyMapper.insert(financeNotify);
         }
+    }
+
+    @Override
+    public void updateNotify(FinanceNotify financeNotify) {
+        financeNotifyMapper.updateNotify(financeNotify);
     }
 }

@@ -43,4 +43,14 @@ public interface ProjectNotifyMapper {
      * @return void
      */
     void update(ProjectNotify projectNotify);
+
+    /**
+     * 修改是否通知
+     * 
+     * @author ZhouHR
+     * @date 2021/01/22 15:10
+     * @param projectNotify
+     * @return void
+     */
+    void updateNotify(ProjectNotify projectNotify);
 }

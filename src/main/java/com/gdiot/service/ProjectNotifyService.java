@@ -15,5 +15,15 @@ public interface ProjectNotifyService {
      * @param projectNotify
      * @return void
      */
-    void insert(ProjectNotify projectNotify);
+    void insertProjectNotify(ProjectNotify projectNotify);
+
+    /**
+     * 更新项目通知人员
+     * 
+     * @author ZhouHR
+     * @date 2021/01/22 15:09
+     * @param projectNotify
+     * @return void
+     */
+    void updateNotify(ProjectNotify projectNotify);
 }

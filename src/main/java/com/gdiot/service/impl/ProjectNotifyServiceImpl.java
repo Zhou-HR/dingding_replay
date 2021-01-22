@@ -18,7 +18,7 @@ public class ProjectNotifyServiceImpl implements ProjectNotifyService {
     private ProjectNotifyMapper projectNotifyMapper;
 
     @Override
-    public void insert(ProjectNotify projectNotify) {
+    public void insertProjectNotify(ProjectNotify projectNotify) {
         // 查询是否有，有的话替换，无的话插入
         String userId = projectNotify.getUserId();
         List<ProjectNotify> list = projectNotifyMapper.selectOne(userId);
@@ -29,5 +29,10 @@ public class ProjectNotifyServiceImpl implements ProjectNotifyService {
             // 不存在
             projectNotifyMapper.insert(projectNotify);
         }
+    }
+
+    @Override
+    public void updateNotify(ProjectNotify projectNotify) {
+        projectNotifyMapper.updateNotify(projectNotify);
     }
 }
