@@ -94,6 +94,7 @@ public class DingDataAnalysis {
                     String id = vo.getId();
                     log.info("name: " + name + "\n");
                     log.info("value: " + value + "\n");
+                    // 解析
                     if ("开票公司".equals(name) || "DDSelectField_1ITKOQRG3DQ80".equals(id)) {
                         dingProcess.setInvoiceCompany(value);
                     } else if ("合同名称及编号".equals(name) || "TextField-JZCI6WBK".equals(id)) {
