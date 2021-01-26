@@ -32,7 +32,23 @@ public class FinanceNotifyServiceImpl implements FinanceNotifyService {
     }
 
     @Override
-    public void updateNotify(FinanceNotify financeNotify) {
-        financeNotifyMapper.updateNotify(financeNotify);
+    public List<FinanceNotify> getFinanceNotifyList() {
+        List<FinanceNotify> financeNotifyList = financeNotifyMapper.selectAll();
+        return financeNotifyList;
+    }
+
+    @Override
+    public void updateNotify(String userId) throws Exception {
+        List<FinanceNotify> list = financeNotifyMapper.selectOne(userId);
+        if (list != null && list.size() > 0) {
+            // 存在
+            FinanceNotify financeNotify = null;
+            financeNotify.setUserId(userId);
+            financeNotify.setNotify(1);
+            financeNotifyMapper.updateNotify(financeNotify);
+        } else {
+            // 不存在
+            throw new Exception("用户不存在");
+        }
     }
 }

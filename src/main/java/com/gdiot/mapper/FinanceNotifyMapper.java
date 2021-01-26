@@ -36,6 +36,15 @@ public interface FinanceNotifyMapper {
     List<FinanceNotify> selectOne(@Param("userId") String userId);
 
     /**
+     * 查询所有
+     * 
+     * @return java.util.List<com.gdiot.entity.FinanceNotify>
+     * @author ZhouHR
+     * @date 2021/01/26 09:49
+     */
+    List<FinanceNotify> selectAll();
+
+    /**
      * 修改
      *
      * @param financeNotify
@@ -47,11 +56,12 @@ public interface FinanceNotifyMapper {
 
     /**
      * 修改是否通知
-     * 
+     *
      * @param financeNotify
      * @return void
      * @author ZhouHR
      * @date 2021/01/22 15:14
      */
     void updateNotify(FinanceNotify financeNotify);
+
 }

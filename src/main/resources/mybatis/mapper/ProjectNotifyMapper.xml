@@ -24,6 +24,12 @@
         </if>
     </select>
 
+    <select id="selectAll" resultType="com.gdiot.entity.ProjectNotify">
+        select
+        <include refid="Base_Column_List"/>
+        from project_notify
+    </select>
+
     <insert id="insert" parameterType="com.gdiot.entity.ProjectNotify">
         insert into project_notify (
         <include refid="Base_Column_List"/>

@@ -38,7 +38,7 @@ public class DingProcessController {
      * @return java.lang.String
      */
     @RequestMapping("/getAllProcessDetail")
-    public String getAllProcessDetail(@RequestBody Map<String, String> params) throws IOException {
+    public String getAllProcessDetail(@RequestBody Map<String, String> params) {
         // 开票申请结束时间
         String endTime = null;
         // 开票申请开始时间

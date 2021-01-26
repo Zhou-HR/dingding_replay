@@ -1,5 +1,6 @@
 package com.gdiot.mapper;
 
+import com.gdiot.entity.FinanceNotify;
 import com.gdiot.entity.ProjectNotify;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -35,6 +36,15 @@ public interface ProjectNotifyMapper {
     List<ProjectNotify> selectOne(@Param("userId") String userId);
 
     /**
+     * 查询所有
+     *
+     * @return java.util.List<com.gdiot.entity.FinanceNotify>
+     * @author ZhouHR
+     * @date 2021/01/26 09:49
+     */
+    List<ProjectNotify> selectAll();
+
+    /**
      * 修改
      * 
      * @author ZhouHR
@@ -53,4 +63,5 @@ public interface ProjectNotifyMapper {
      * @return void
      */
     void updateNotify(ProjectNotify projectNotify);
+
 }

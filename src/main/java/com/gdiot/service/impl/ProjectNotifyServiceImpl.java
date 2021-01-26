@@ -1,12 +1,14 @@
 package com.gdiot.service.impl;
 
-import com.gdiot.entity.ProjectNotify;
-import com.gdiot.mapper.ProjectNotifyMapper;
-import com.gdiot.service.ProjectNotifyService;
+import java.util.List;
+
+import com.gdiot.entity.FinanceNotify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.gdiot.entity.ProjectNotify;
+import com.gdiot.mapper.ProjectNotifyMapper;
+import com.gdiot.service.ProjectNotifyService;
 
 /**
  * @author ZhouHR
@@ -32,7 +34,23 @@ public class ProjectNotifyServiceImpl implements ProjectNotifyService {
     }
 
     @Override
-    public void updateNotify(ProjectNotify projectNotify) {
-        projectNotifyMapper.updateNotify(projectNotify);
+    public List<ProjectNotify> getProjectNotifyList() {
+        List<ProjectNotify> projectNotifyList = projectNotifyMapper.selectAll();
+        return projectNotifyList;
+    }
+
+    @Override
+    public void updateNotify(String userId) throws Exception {
+        List<ProjectNotify> list = projectNotifyMapper.selectOne(userId);
+        if (list != null && list.size() > 0) {
+            // 存在
+            ProjectNotify projectNotify = null;
+            projectNotify.setUserId(userId);
+            projectNotify.setNotify(1);
+            projectNotifyMapper.updateNotify(projectNotify);
+        }else {
+            // 不存在
+            throw new Exception("用户不存在");
+        }
     }
 }
