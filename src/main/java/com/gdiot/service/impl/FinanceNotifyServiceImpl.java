@@ -21,8 +21,8 @@ public class FinanceNotifyServiceImpl implements FinanceNotifyService {
     public void insertFinanceNotify(FinanceNotify financeNotify) {
         // 查询是否有，有的话替换，无的话插入
         String userId = financeNotify.getUserId();
-        List<FinanceNotify> list = financeNotifyMapper.selectOne(userId);
-        if (list != null && list.size() > 0) {
+        FinanceNotify notify = financeNotifyMapper.selectOne(userId);
+        if (notify != null) {
             // 已存在
             financeNotifyMapper.update(financeNotify);
         } else {
@@ -39,8 +39,8 @@ public class FinanceNotifyServiceImpl implements FinanceNotifyService {
 
     @Override
     public void updateNotify(String userId) throws Exception {
-        List<FinanceNotify> list = financeNotifyMapper.selectOne(userId);
-        if (list != null && list.size() > 0) {
+        FinanceNotify notify = financeNotifyMapper.selectOne(userId);
+        if (notify != null) {
             // 存在
             FinanceNotify financeNotify = null;
             financeNotify.setUserId(userId);

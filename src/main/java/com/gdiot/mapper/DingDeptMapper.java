@@ -18,11 +18,11 @@ public interface DingDeptMapper {
      * 查询
      * 
      * @author ZhouHR
-     * @date 2021/01/20 19:23
+     * @date 2021/01/26 13:45
      * @param deptId
-     * @return java.util.List<com.gdiot.entity.DingDept>
+     * @return com.gdiot.entity.DingDept
      */
-    List<DingDept> selectOne(@Param("deptId") String deptId);
+    DingDept selectOne(@Param("deptId") String deptId);
 
     /**
      * 更新

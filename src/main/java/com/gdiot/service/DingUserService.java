@@ -27,4 +27,14 @@ public interface DingUserService {
      * @return java.util.List<com.gdiot.entity.DingUser>
      */
     List<DingUser> selectAllUserId();
+
+    /**
+     * 根据用户id查询用户
+     * 
+     * @author ZhouHR
+     * @date 2021/01/26 13:41
+     * @param userId
+     * @return com.gdiot.entity.DingUser
+     */
+    DingUser selectOne(String userId);
 }

@@ -1,6 +1,7 @@
 package com.gdiot.service;
 
 import com.gdiot.entity.DingDept;
+import com.gdiot.entity.DingUser;
 
 /**
  * @author ZhouHR
@@ -16,4 +17,14 @@ public interface DingDeptService {
      * @return void
      */
     void insertDingDept(DingDept dingDept);
+
+    /**
+     * 根据部门id查询部门
+     *
+     * @author ZhouHR
+     * @date 2021/01/26 13:41
+     * @param deptId
+     * @return com.gdiot.entity.DingDept
+     */
+    DingDept selectOne(String deptId);
 }

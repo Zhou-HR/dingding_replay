@@ -27,13 +27,13 @@ public interface FinanceNotifyMapper {
 
     /**
      * 查询
-     *
-     * @param userId
-     * @return java.util.List<com.gdiot.entity.FinanceNotify>
+     * 
      * @author ZhouHR
-     * @date 2021/01/20 19:19
+     * @date 2021/01/26 13:48
+     * @param userId
+     * @return com.gdiot.entity.FinanceNotify
      */
-    List<FinanceNotify> selectOne(@Param("userId") String userId);
+    FinanceNotify selectOne(@Param("userId") String userId);
 
     /**
      * 查询所有

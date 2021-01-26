@@ -31,9 +31,9 @@ public interface ProjectNotifyMapper {
      * @author ZhouHR
      * @date 2021/01/20 19:26
      * @param userId
-     * @return java.util.List<com.gdiot.entity.ProjectNotify>
+     * @return com.gdiot.entity.ProjectNotify
      */
-    List<ProjectNotify> selectOne(@Param("userId") String userId);
+    ProjectNotify selectOne(@Param("userId") String userId);
 
     /**
      * 查询所有

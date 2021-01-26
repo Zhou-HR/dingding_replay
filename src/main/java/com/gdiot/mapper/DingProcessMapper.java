@@ -28,11 +28,11 @@ public interface DingProcessMapper {
      * 查询
      * 
      * @author ZhouHR
-     * @date 2021/01/20 19:25
+     * @date 2021/01/26 13:47
      * @param processId
-     * @return java.util.List<com.gdiot.entity.DingProcess>
+     * @return com.gdiot.entity.DingProcess
      */
-    List<DingProcess> selectOne(@Param("processId") String processId);
+    DingProcess selectOne(@Param("processId") String processId);
 
     /**
      * 更新

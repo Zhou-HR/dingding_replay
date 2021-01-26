@@ -23,8 +23,8 @@ public class ProjectNotifyServiceImpl implements ProjectNotifyService {
     public void insertProjectNotify(ProjectNotify projectNotify) {
         // 查询是否有，有的话替换，无的话插入
         String userId = projectNotify.getUserId();
-        List<ProjectNotify> list = projectNotifyMapper.selectOne(userId);
-        if (list != null && list.size() > 0) {
+        ProjectNotify notify = projectNotifyMapper.selectOne(userId);
+        if (notify != null) {
             // 已存在
             projectNotifyMapper.update(projectNotify);
         } else {
@@ -41,14 +41,14 @@ public class ProjectNotifyServiceImpl implements ProjectNotifyService {
 
     @Override
     public void updateNotify(String userId) throws Exception {
-        List<ProjectNotify> list = projectNotifyMapper.selectOne(userId);
-        if (list != null && list.size() > 0) {
+        ProjectNotify notify = projectNotifyMapper.selectOne(userId);
+        if (notify != null) {
             // 存在
             ProjectNotify projectNotify = null;
             projectNotify.setUserId(userId);
             projectNotify.setNotify(1);
             projectNotifyMapper.updateNotify(projectNotify);
-        }else {
+        } else {
             // 不存在
             throw new Exception("用户不存在");
         }

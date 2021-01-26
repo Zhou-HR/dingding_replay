@@ -21,8 +21,8 @@ public class DingUserServiceImpl implements DingUserService {
     public void insertDingUser(DingUser dingUser) {
         // 查询是否有，有的话替换，无的话插入
         String userId = dingUser.getUserId();
-        List<DingUser> list = dingUserMapper.selectOne(userId);
-        if (list != null && list.size() > 0) {
+        DingUser user = dingUserMapper.selectOne(userId);
+        if (user != null) {
             // 已存在
             dingUserMapper.update(dingUser);
         } else {
@@ -35,5 +35,10 @@ public class DingUserServiceImpl implements DingUserService {
     public List<DingUser> selectAllUserId() {
         // 查询所有用户id
         return dingUserMapper.selectAllUserId();
+    }
+
+    @Override
+    public DingUser selectOne(String userId) {
+        return dingUserMapper.selectOne(userId);
     }
 }

@@ -1,12 +1,11 @@
 package com.gdiot.service.impl;
 
-import com.gdiot.entity.DingDept;
-import com.gdiot.mapper.DingDeptMapper;
-import com.gdiot.service.DingDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.gdiot.entity.DingDept;
+import com.gdiot.mapper.DingDeptMapper;
+import com.gdiot.service.DingDeptService;
 
 /**
  * @author ZhouHR
@@ -21,13 +20,18 @@ public class DingDeptServiceImpl implements DingDeptService {
     public void insertDingDept(DingDept dingDept) {
         String depId = dingDept.getDeptId();
         // 查询是否有，有的话替换，无的话插入
-        List<DingDept> list = dingDeptMapper.selectOne(depId);
-        if (list != null && list.size() > 0) {
+        DingDept Dept = dingDeptMapper.selectOne(depId);
+        if (Dept != null) {
             // 已存在
             dingDeptMapper.update(dingDept);
         } else {
             // 不存在
             dingDeptMapper.insert(dingDept);
         }
+    }
+
+    @Override
+    public DingDept selectOne(String deptId) {
+        return dingDeptMapper.selectOne(deptId);
     }
 }

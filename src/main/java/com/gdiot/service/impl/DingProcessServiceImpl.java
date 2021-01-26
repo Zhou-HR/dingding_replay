@@ -22,8 +22,8 @@ public class DingProcessServiceImpl implements DingProcessService {
     public void insertDingProcess(DingProcess dingProcess) {
         String processId = dingProcess.getProcessId();
         // 查询是否有，有的话替换，无的话插入
-        List<DingProcess> list = dingProcessMapper.selectOne(processId);
-        if (list != null && list.size() > 0) {
+        DingProcess process = dingProcessMapper.selectOne(processId);
+        if (process != null) {
             // 已存在
             dingProcessMapper.update(dingProcess);
         } else {

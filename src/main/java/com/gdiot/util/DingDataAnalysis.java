@@ -16,10 +16,15 @@ import com.gdiot.service.DingProcessService;
 import com.gdiot.service.DingUserService;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 对接钉钉的工具类
@@ -191,7 +196,8 @@ public class DingDataAnalysis {
                 // 工作地点
                 dingUser.setWorkPlace(result.getWorkPlace());
                 // 身份
-                List<OapiV2UserGetResponse.UserRole> rolesList = result.getRoleList() != null ? result.getRoleList() : null;
+                List<OapiV2UserGetResponse.UserRole> rolesList =
+                    result.getRoleList() != null ? result.getRoleList() : null;
                 if (rolesList != null) {
                     int count = rolesList.size();
                     List<String> list = new ArrayList<>();
@@ -204,7 +210,7 @@ public class DingDataAnalysis {
                 }
                 return dingUser;
             } else if (errCode == 60121) {
-                //找不到该用户 检查该企业下该员工是否存在
+                // 找不到该用户 检查该企业下该员工是否存在
                 return null;
             } else {
                 return null;
@@ -269,7 +275,8 @@ public class DingDataAnalysis {
     public List<Long> getSubDeptList(String deptId, String accessToken) {
         try {
             // 根据部门id获取部门子部门id
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/listsubid");
+            DingTalkClient client =
+                new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/listsubid");
             OapiV2DepartmentListsubidRequest req = new OapiV2DepartmentListsubidRequest();
 
             req.setDeptId(Long.valueOf(deptId));
@@ -363,10 +370,10 @@ public class DingDataAnalysis {
         long startTime = endTime - 24 * 60 * 60 * 1000;
         if (null != params) {
             if (params.containsKey("startTime")) {
-                startTime = (long) params.get("startTime");
+                startTime = (long)params.get("startTime");
             }
             if (params.containsKey("endTime")) {
-                endTime = (long) params.get("endTime");
+                endTime = (long)params.get("endTime");
             }
         }
         log.info("startTime-----" + DateUtil.milliSecond2Date(String.valueOf(startTime), "yyyy-MM-dd HH:mm:ss"));
@@ -416,7 +423,8 @@ public class DingDataAnalysis {
     public List<String> getProcessListId(long startTime, long endTime, String userId, String accessToken) {
         try {
             // 根据用户ID，获取开票审批数据
-            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/listids");
+            DingTalkClient client =
+                new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/listids");
             OapiProcessinstanceListidsRequest req = new OapiProcessinstanceListidsRequest();
             req.setProcessCode(DingDingConstants.PROCESS_CODE);
             req.setStartTime(startTime);
@@ -518,9 +526,11 @@ public class DingDataAnalysis {
 
         dingProcess.setProcessId(processId);
         dingProcess.setTitle(vo.getTitle());
-        dingProcess.setStartTime(DateUtil.milliSecond2Date(String.valueOf(vo.getCreateTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+        dingProcess.setStartTime(
+            DateUtil.milliSecond2Date(String.valueOf(vo.getCreateTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
         if (vo.getFinishTime() != null) {
-            dingProcess.setEndTime(DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
+            dingProcess.setEndTime(
+                DateUtil.milliSecond2Date(String.valueOf(vo.getFinishTime().getTime()), "yyyy-MM-dd HH:mm:ss"));
         }
         dingProcess.setOriginatorUserId(vo.getOriginatorUserid());
         dingProcess.setOriginatorDeptId(vo.getOriginatorDeptId());
@@ -540,7 +550,8 @@ public class DingDataAnalysis {
      * @date 2021/01/20 19:47
      */
     public DingProcess analysisProcessFormValues(List<OapiProcessinstanceGetResponse.FormComponentValueVo> list) {
-        System.out.println("-------------------------------analysis Process FormValues----------------------------------- " + "\n");
+        System.out.println(
+            "-------------------------------analysis Process FormValues----------------------------------- " + "\n");
         DingProcess dingProcess = new DingProcess();
         try {
             if (list != null && list.size() > 0) {
@@ -585,10 +596,147 @@ public class DingDataAnalysis {
         } catch (JSONException e) {
             log.info("JSONException e=" + e);
         }
-        System.out.println("-------------------------------analysis Process FormValues  end----------------------------------- " + "\n");
+        System.out.println(
+            "-------------------------------analysis Process FormValues  end----------------------------------- "
+                + "\n");
         return dingProcess;
     }
 
+    public OapiMessageCorpconversationAsyncsendV2Response sendMessage(String userIdList, String textMsg,
+        String accessToken) {
+        try {
+            DingTalkClient client =
+                new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2");
+
+            OapiMessageCorpconversationAsyncsendV2Request request = new OapiMessageCorpconversationAsyncsendV2Request();
+            request.setUseridList(userIdList);
+            request.setAgentId(DingDingConstants.AGENTID);
+            request.setToAllUser(false);
+
+            OapiMessageCorpconversationAsyncsendV2Request.Msg msg =
+                new OapiMessageCorpconversationAsyncsendV2Request.Msg();
+            msg.setMsgtype("text");
+            msg.setText(new OapiMessageCorpconversationAsyncsendV2Request.Text());
+            msg.getText().setContent(textMsg);
+            request.setMsg(msg);
+
+            OapiMessageCorpconversationAsyncsendV2Response response = client.execute(request, accessToken);
+            System.out.println("getToken()-----" + response);
+            return response;
+        } catch (ApiException e) {
+            e.printStackTrace();
+        }
+        OapiMessageCorpconversationAsyncsendV2Response res = new OapiMessageCorpconversationAsyncsendV2Response();
+        res.setCode("1");
+        res.setBody("send msg error!");
+        res.setErrcode(1L);
+        res.setErrmsg("send msg error!");
+        return res;
+    }
+
+    /**
+     * 生成Excel文件，每行写入内容.开票申请报表
+     *
+     * @param dingProcessList
+     * @param name
+     */
+    public void CreateProcessFile(List<DingProcess> dingProcessList, String name) {
+        // 获取存放路径 excel
+        String path = PropertiesUtil.getValue("path");
+        String templatePath = PropertiesUtil.getValue("template");
+
+        String fileName = path + name;
+
+        InputStream in = null;
+        OutputStream out = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        File file;
+
+        try {
+            in = new FileInputStream(templatePath);
+            Workbook workbook = new XSSFWorkbook(in);
+            Sheet sheet = workbook.getSheetAt(0);
+            int rowNum = 1;
+            if (dingProcessList != null && dingProcessList.size() > 0) {
+                for (DingProcess dingProcess : dingProcessList) {
+                    Row row = sheet.createRow(rowNum);
+                    rowNum++;
+
+                    int cellNum = 0;
+                    Cell cell = row.createCell(cellNum);
+                    cell.setCellValue(rowNum - 1);
+                    cellNum++;
+
+                    // 开票申请人
+                    String userId = dingProcess.getOriginatorUserId();
+                    DingUser dingUser = dingUserService.selectOne(userId);
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingUser.getName());
+                    cellNum++;
+
+                    // 金额
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingProcess.getInvoiceAmount());
+                    cellNum++;
+
+                    // 项目
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingProcess.getInvoiceContent());
+                    cellNum++;
+
+                    // 所属部门
+                    String deptId = dingProcess.getOriginatorDeptId();
+                    DingDept dingDept = dingDeptService.selectOne(deptId);
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingDept.getDeptName());
+                    cellNum++;
+
+                    // 部门领导
+                    List<String> userIdList = Arrays.asList(dingDept.getDeptManagerId().split(","));
+                    List<String> managerNameList = null;
+                    for (String managerId : userIdList) {
+                        DingUser manager = dingUserService.selectOne(managerId);
+                        managerNameList.add(manager.getName());
+                    }
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(managerNameList.toString());
+                    cellNum++;
+
+                    // 申请回款时间
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingProcess.getInvoiceFinishTime());
+                    cellNum++;
+
+                    // 客户
+                    cell = row.createCell(cellNum);
+                    cell.setCellValue(dingProcess.getInvoiceCompany());
+                    cellNum++;
+
+                }
+            } else {
+                log.info("---------CreateAssessFile list null-------");
+            }
+
+            file = new File(fileName);
+            out = new FileOutputStream(file);
+            workbook.write(out);
+            workbook.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
-
-

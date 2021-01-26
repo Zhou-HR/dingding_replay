@@ -19,11 +19,11 @@ public interface DingUserMapper {
      * 查询
      * 
      * @author ZhouHR
-     * @date 2021/01/20 19:25
+     * @date 2021/01/26 13:46
      * @param userId
-     * @return java.util.List<com.gdiot.entity.DingUser>
+     * @return com.gdiot.entity.DingUser
      */
-    List<DingUser> selectOne(@Param("userId") String userId);
+    DingUser selectOne(@Param("userId") String userId);
 
     /**
      * 更新
