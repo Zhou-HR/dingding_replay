@@ -3,7 +3,10 @@ package com.gdiot.task;
 import com.alibaba.fastjson.JSONArray;
 import com.gdiot.redis.RedisUtil;
 import com.gdiot.service.AsyncService;
-import com.gdiot.util.DingDataAnalysis;
+import com.gdiot.util.dingding.DingDeptUtil;
+import com.gdiot.util.dingding.DingDingUtil;
+import com.gdiot.util.dingding.DingProcessUtil;
+import com.gdiot.util.dingding.DingUserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,12 +70,11 @@ public class DataSenderTask implements Runnable {
      * @return void
      */
     private void getAllDeptUserDetail(String depId) {
-        DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         // 获取Token
-        String accessToken = mDingDataAnalysis.getToken();
+        String accessToken = DingDingUtil.getToken();
         System.out.println("AccessToken=" + accessToken);
         // 获取所有部门下的用户详情，并保存数据库
-        JSONArray userListDetail = mDingDataAnalysis.getAllDeptUserDetail(depId, accessToken);
+        JSONArray userListDetail = DingUserUtil.getAllDeptUserDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
@@ -85,12 +87,11 @@ public class DataSenderTask implements Runnable {
      * @return void
      */
     private void getAllDeptDetail(String depId) {
-        DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         // 获取Token
-        String accessToken = mDingDataAnalysis.getToken();
+        String accessToken = DingDingUtil.getToken();
         System.out.println("AccessToken=" + accessToken);
         // 获取所有部门的详细信息
-        JSONArray userListDetail = mDingDataAnalysis.getAllDeptDetail(depId, accessToken);
+        JSONArray userListDetail = DingDeptUtil.getAllDeptDetail(depId, accessToken);
         LOGGER.info("userListDetail=" + userListDetail);
     }
 
@@ -103,12 +104,11 @@ public class DataSenderTask implements Runnable {
      * @return void
      */
     private void getAllProcessDetail(Map<String, Object> map) {
-        DingDataAnalysis mDingDataAnalysis = new DingDataAnalysis();
         // 获取Token
-        String accessToken = mDingDataAnalysis.getToken();
+        String accessToken = DingDingUtil.getToken();
         System.out.println("AccessToken=" + accessToken);
         // 获取所有开票审批的列表
-        mDingDataAnalysis.getAllProcessDetail(accessToken, map);
+        DingProcessUtil.getAllProcessDetail(accessToken, map);
         LOGGER.info("getAllProcessDetail over");
     }
 

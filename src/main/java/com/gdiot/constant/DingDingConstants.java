@@ -1,4 +1,4 @@
-package com.gdiot.util;
+package com.gdiot.constant;
 
 /**
  * 钉钉应用的常量类
@@ -12,7 +12,7 @@ public class DingDingConstants {
      */
     public static String TOKEN_URL = "https://oapi.dingtalk.com/gettoken";
 
-    /**********钉钉回款提醒************/
+    /********** 钉钉回款提醒 ************/
     /**
      * 自动分配微应用的ID
      */
@@ -30,6 +30,3 @@ public class DingDingConstants {
      */
     public static String PROCESS_CODE = "PROC-7CFF6983-C7BF-4F6B-9506-E5D54EE6B80E";
 }
-
-
-
