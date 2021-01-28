@@ -22,7 +22,7 @@ public class PropertiesUtil {
             return PROPERTIES;
         }
         PropertiesUtil util = PropertiesUtil.getInstance();
-        Properties properties = util.loadProperties("application.properties");
+        Properties properties = util.loadProperties("param.properties");
         return properties;
     }
 
